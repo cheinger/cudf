@@ -1100,6 +1100,9 @@ void snappy_decompress(device_span<gpu_inflate_input_s> comp_in,
 rmm::device_buffer reader::impl::decompress_page_data(
   hostdevice_vector<gpu::ColumnChunkDesc>& chunks,
   hostdevice_vector<gpu::PageInfo>& pages,
+  hostdevice_vector<gpu_inflate_input_s>& inflate_in,
+  hostdevice_vector<gpu_inflate_status_s>& inflate_out,
+  hostdevice_vector<bool>& any_page_failure,
   rmm::cuda_stream_view stream)
 {
   auto for_each_codec_page = [&](parquet::Compression codec, const std::function<void(size_t)>& f) {
@@ -1146,10 +1149,10 @@ rmm::device_buffer reader::impl::decompress_page_data(
 
   // Dispatch batches of pages to decompress for each codec
   rmm::device_buffer decomp_pages(total_decomp_size, stream);
-  hostdevice_vector<gpu_inflate_input_s> inflate_in(0, num_comp_pages, stream);
-  hostdevice_vector<gpu_inflate_status_s> inflate_out(0, num_comp_pages, stream);
+//  hostdevice_vector<gpu_inflate_input_s> inflate_in(0, num_comp_pages, stream);
+//  hostdevice_vector<gpu_inflate_status_s> inflate_out(0, num_comp_pages, stream);
 
-  hostdevice_vector<bool> any_page_failure(1, stream);
+//  hostdevice_vector<bool> any_page_failure(1, stream);
   any_page_failure[0] = false;
   any_page_failure.host_to_device(stream);
 
@@ -1180,12 +1183,12 @@ rmm::device_buffer reader::impl::decompress_page_data(
 
       CUDA_TRY(cudaMemcpyAsync(inflate_in.device_ptr(start_pos),
                                inflate_in.host_ptr(start_pos),
-                               sizeof(decltype(inflate_in)::value_type) * (argc - start_pos),
+                               sizeof(gpu_inflate_input_s) * (argc - start_pos),
                                cudaMemcpyHostToDevice,
                                stream.value()));
       CUDA_TRY(cudaMemcpyAsync(inflate_out.device_ptr(start_pos),
                                inflate_out.host_ptr(start_pos),
-                               sizeof(decltype(inflate_out)::value_type) * (argc - start_pos),
+                               sizeof(gpu_inflate_status_s) * (argc - start_pos),
                                cudaMemcpyHostToDevice,
                                stream.value()));
 
@@ -1224,7 +1227,7 @@ rmm::device_buffer reader::impl::decompress_page_data(
 
       CUDA_TRY(cudaMemcpyAsync(inflate_out.host_ptr(start_pos),
                                inflate_out.device_ptr(start_pos),
-                               sizeof(decltype(inflate_out)::value_type) * (argc - start_pos),
+                               sizeof(gpu_inflate_status_s) * (argc - start_pos),
                                cudaMemcpyDeviceToHost,
                                stream.value()));
     }
@@ -1738,8 +1741,19 @@ table_with_metadata reader::impl::read(size_type skip_rows,
 
       // decoding of column/page information
       decode_page_headers(chunks, pages, stream);
+
+      size_t num_comp_pages = 0;
+      for (size_t c = 0; c < chunks.size(); c++) {
+        num_comp_pages += chunks[c].max_num_pages;
+      }
+
+      // Allocated for decompression, we don't want to cudaFreeHost inbetween decomp kernel and gpuDecodeDataPage kernel
+      hostdevice_vector<gpu_inflate_input_s> inflate_in(0, num_comp_pages, stream);
+      hostdevice_vector<gpu_inflate_status_s> inflate_out(0, num_comp_pages, stream);
+      hostdevice_vector<bool> any_page_failure(1, stream);
+
       if (total_decompressed_size > 0) {
-        decomp_page_data = decompress_page_data(chunks, pages, stream);
+        decomp_page_data = decompress_page_data(chunks, pages, inflate_in, inflate_out, any_page_failure, stream);
         // Free compressed data
         for (size_t c = 0; c < chunks.size(); c++) {
           if (chunks[c].codec != parquet::Compression::UNCOMPRESSED) { page_data[c].reset(); }

@@ -132,6 +132,9 @@ class reader::impl {
    */
   rmm::device_buffer decompress_page_data(hostdevice_vector<gpu::ColumnChunkDesc>& chunks,
                                           hostdevice_vector<gpu::PageInfo>& pages,
+                                          hostdevice_vector<gpu_inflate_input_s>& inflate_in,
+                                          hostdevice_vector<gpu_inflate_status_s>& inflate_out,
+                                          hostdevice_vector<bool>& any_page_failure,
                                           rmm::cuda_stream_view stream);
 
   /**
