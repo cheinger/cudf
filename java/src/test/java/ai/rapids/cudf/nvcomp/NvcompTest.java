@@ -99,6 +99,68 @@ public class NvcompTest {
     }
   }
 
+  @Test
+  void testBatchedANSRoundTripAsync() {
+    final Cuda.Stream stream = Cuda.DEFAULT_STREAM;
+    final long chunkSize = 64 * 1024;
+    final long targetIntermediteSize = Long.MAX_VALUE;
+    final int maxElements = 1024 * 1024 + 1;
+    final int numBuffers = 200;
+    long[] data = new long[maxElements];
+    for (int i = 0; i < maxElements; ++i) {
+      data[i] = i;
+    }
+
+    try (CloseableArray<DeviceMemoryBuffer> originalBuffers =
+             CloseableArray.wrap(new DeviceMemoryBuffer[numBuffers])) {
+      // create the batched buffers to compress
+      for (int i = 0; i < originalBuffers.size(); i++) {
+        originalBuffers.set(i, initBatchBuffer(data, i));
+        // Increment the refcount since compression will try to close it
+        originalBuffers.get(i).incRefCount();
+        log.info("original buffer size: " + originalBuffers.get(i).getLength() + " last chunk: " + originalBuffers.get(i).getLength() % chunkSize);
+      }
+
+      // compress and decompress the buffers
+      BatchedANSCompressor compressor = new BatchedANSCompressor(chunkSize, targetIntermediteSize);
+
+      try (CloseableArray<DeviceMemoryBuffer> compressedBuffers =
+               CloseableArray.wrap(compressor.compress(originalBuffers.getArray(), stream));
+           CloseableArray<DeviceMemoryBuffer> uncompressedBuffers =
+               CloseableArray.wrap(new DeviceMemoryBuffer[numBuffers])) {
+        for (int i = 0; i < numBuffers; i++) {
+          uncompressedBuffers.set(i,
+              DeviceMemoryBuffer.allocate(originalBuffers.get(i).getLength()));
+        }
+
+        // decompress takes ownership of the compressed buffers and will close them
+        BatchedANSDecompressor.decompressAsync(chunkSize, compressedBuffers.release(),
+            uncompressedBuffers.getArray(), stream);
+
+        // check the decompressed results against the original
+        for (int i = 0; i < numBuffers; ++i) {
+          try (HostMemoryBuffer expected =
+                   HostMemoryBuffer.allocate(originalBuffers.get(i).getLength());
+               HostMemoryBuffer actual =
+                   HostMemoryBuffer.allocate(uncompressedBuffers.get(i).getLength())) {
+            Assertions.assertTrue(expected.getLength() <= Integer.MAX_VALUE);
+            Assertions.assertTrue(actual.getLength() <= Integer.MAX_VALUE);
+            Assertions.assertEquals(expected.getLength(), actual.getLength(),
+                "uncompressed size mismatch at buffer " + i);
+            expected.copyFromDeviceBuffer(originalBuffers.get(i));
+            actual.copyFromDeviceBuffer(uncompressedBuffers.get(i));
+            byte[] expectedBytes = new byte[(int) expected.getLength()];
+            expected.getBytes(expectedBytes, 0, 0, expected.getLength());
+            byte[] actualBytes = new byte[(int) actual.getLength()];
+            actual.getBytes(actualBytes, 0, 0, actual.getLength());
+            Assertions.assertArrayEquals(expectedBytes, actualBytes,
+                "mismatch in batch buffer " + i);
+          }
+        }
+      }
+    }
+  }
+
   private void closeBuffer(MemoryBuffer buffer) {
     if (buffer != null) {
       buffer.close();
@@ -122,6 +184,7 @@ public class NvcompTest {
       default:
         break;
     }
+    if ((dataLength * 8) % (64 * 1024) <= 32) dataLength = (dataLength & ~0x03) + 4;
     long[] bufferData = Arrays.copyOfRange(data, dataStart, dataStart + dataLength + 1);
     DeviceMemoryBuffer devBuffer = null;
     try (HostMemoryBuffer hmb = HostMemoryBuffer.allocate(bufferData.length * 8)) {

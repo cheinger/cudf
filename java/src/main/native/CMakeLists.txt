@@ -188,22 +188,25 @@ endif()
 # ##################################################################################################
 # * nvcomp ----------------------------------------------------------------------------------------
 
-find_path(NVCOMP_INCLUDE "nvcomp" HINTS "${CUDF_CPP_BUILD_DIR}/_deps/nvcomp-src/include"
-                                        "$ENV{CONDA_PREFIX}/include"
-)
+# find_path(NVCOMP_INCLUDE "nvcomp" HINTS "${CUDF_CPP_BUILD_DIR}/_deps/nvcomp-src/include"
+# "$ENV{CONDA_PREFIX}/include" )
+set(NVCOMP_INCLUDE "/home/jimb/git/nvcomp-ans/include")
+set(ANS_INCLUDE "/opt/libans_gpu/11.4.1/include")
 
 message(STATUS "NVCOMP: NVCOMP_INCLUDE set to ${NVCOMP_INCLUDE}")
+message(STATUS "ANS: ANS_INCLUDE set to ${ANS_INCLUDE}")
 
-set(CUDF_JNI_NVCOMP_LIBNAME "libnvcomp.a")
-find_library(
-  NVCOMP_LIBRARY ${CUDF_JNI_NVCOMP_LIBNAME} REQUIRED HINTS "${CUDF_CPP_BUILD_DIR}/lib"
-                                                           "$ENV{CONDA_PREFIX}/lib"
-)
+set(NVCOMP_LIBRARY "/home/jimb/git/nvcomp-ans/build/lib/libnvcomp.a")
+set(ANS_LIBRARY "/opt/libans_gpu/11.4.1/lib/libans_gpu.a")
+
+# set(CUDF_JNI_NVCOMP_LIBNAME "libnvcomp.a") find_library( NVCOMP_LIBRARY ${CUDF_JNI_NVCOMP_LIBNAME}
+# REQUIRED HINTS "${CUDF_CPP_BUILD_DIR}/lib" "$ENV{CONDA_PREFIX}/lib" )
 
 if(NOT NVCOMP_LIBRARY)
   message(FATAL_ERROR "nvcomp static library not found.")
 else()
   message(STATUS "NVCOMP: NVCOMP_LIBRARY set to ${NVCOMP_LIBRARY}")
+  message(STATUS "ANS: ANS_LIBRARY set to ${ANS_LIBRARY}")
 endif()
 
 # ##################################################################################################
@@ -262,6 +265,7 @@ target_include_directories(
          "${LIBCUDACXX_INCLUDE}"
          "${CUDAToolkit_INCLUDE_DIRS}"
          "${NVCOMP_INCLUDE}"
+         "${ANS_INCLUDE}"
          "${CMAKE_BINARY_DIR}/include"
          "${CMAKE_SOURCE_DIR}/include"
          "${SPDLOG_INCLUDE}"
@@ -332,7 +336,7 @@ if(CUDF_JNI_LIBCUDF_STATIC)
 endif()
 
 target_link_libraries(
-  cudfjni PRIVATE ${CUDF_LINK} ${NVCOMP_LIBRARY} ${ARROW_LIBRARY} CUDA::cuda_driver
+  cudfjni PRIVATE ${CUDF_LINK} ${NVCOMP_LIBRARY} ${ANS_LIBRARY} ${ARROW_LIBRARY} CUDA::cuda_driver
 )
 
 # ##################################################################################################

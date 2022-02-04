@@ -26,8 +26,8 @@ import ai.rapids.cudf.NvtxRange;
 
 import java.util.Arrays;
 
-/** LZ4 decompressor that operates on multiple input buffers in a batch */
-public class BatchedLZ4Decompressor {
+/** ANS decompressor that operates on multiple input buffers in a batch */
+public class BatchedANSDecompressor {
   /**
    * Asynchronously decompress a batch of buffers
    * @param chunkSize maximum uncompressed block size, must match value used during compression
@@ -42,7 +42,7 @@ public class BatchedLZ4Decompressor {
                                      Cuda.Stream stream) {
     try (CloseableArray<BaseDeviceMemoryBuffer> inputs =
              CloseableArray.wrap(Arrays.copyOf(origInputs, origInputs.length))) {
-      BatchedLZ4Compressor.validateChunkSize(chunkSize);
+      BatchedANSCompressor.validateChunkSize(chunkSize);
       if (origInputs.length != outputs.length) {
         throw new IllegalArgumentException("number of inputs must match number of outputs");
       }
@@ -62,7 +62,7 @@ public class BatchedLZ4Decompressor {
         totalChunks += numBufferChunks;
       }
 
-      final long tempBufferSize = NvcompJni.batchedLZ4DecompressGetTempSize(totalChunks, chunkSize);
+      final long tempBufferSize = NvcompJni.batchedANSDecompressGetTempSize(totalChunks, chunkSize);
       try (DeviceMemoryBuffer devAddrsSizes =
                buildAddrsSizesBuffer(chunkSize, totalChunks, inputs.getArray(), chunksPerInput,
                    outputs, stream);
@@ -76,7 +76,7 @@ public class BatchedLZ4Decompressor {
         final long outputAddrsPtr = inputAddrsPtr + totalChunks * 8;
         final long inputSizesPtr = outputAddrsPtr + totalChunks * 8;
         final long outputSizesPtr = inputSizesPtr + totalChunks * 8;
-        NvcompJni.batchedLZ4DecompressAsync(
+        NvcompJni.batchedANSDecompressAsync(
             inputAddrsPtr,
             inputSizesPtr,
             outputSizesPtr,
@@ -136,7 +136,7 @@ public class BatchedLZ4Decompressor {
           final BaseDeviceMemoryBuffer output = outputs[inputIdx];
           final int numChunksInInput = chunksPerInput[inputIdx];
           long srcAddr = input.getAddress() +
-              BatchedLZ4Compressor.METADATA_BYTES_PER_CHUNK * numChunksInInput;
+              BatchedANSCompressor.METADATA_BYTES_PER_CHUNK * numChunksInInput;
           long destAddr = output.getAddress();
           final long chunkIdxEnd = chunkIdx + numChunksInInput;
           while (chunkIdx < chunkIdxEnd) {
@@ -144,11 +144,17 @@ public class BatchedLZ4Decompressor {
             final long destChunkSize = (chunkIdx < chunkIdxEnd - 1) ? chunkSize
                 : output.getAddress() + output.getLength() - destAddr;
             assert(srcAddr % BatchedANSCompressor.CHUNK_ALIGN == 0);
+            assert(srcChunkSize != 0);
+	    assert(srcChunkSize >= 32);
+            assert(destChunkSize != 0);
+            //assert(destChunkSize >= 32);
+            assert(srcAddr != 0);
+            assert(destAddr != 0);
             hostAddrsSizes.setLong(srcAddrsOffset + chunkIdx * 8, srcAddr);
             hostAddrsSizes.setLong(destAddrsOffset + chunkIdx * 8, destAddr);
             hostAddrsSizes.setLong(srcSizesOffset + chunkIdx * 8, srcChunkSize);
             hostAddrsSizes.setLong(destSizesOffset + chunkIdx * 8, destChunkSize);
-            srcAddr += BatchedLZ4Compressor.chunk_align(srcChunkSize);
+            srcAddr += BatchedANSCompressor.chunk_align(srcChunkSize);
             destAddr += destChunkSize;
             ++chunkIdx;
           }
@@ -174,7 +180,7 @@ public class BatchedLZ4Decompressor {
                                                 Cuda.Stream stream) {
     try (NvtxRange range = new NvtxRange("fetchMetadata", NvtxColor.PURPLE)) {
       // one long per chunk containing the compressed size
-      final long totalMetadataSize = totalChunks * BatchedLZ4Compressor.METADATA_BYTES_PER_CHUNK;
+      final long totalMetadataSize = totalChunks * BatchedANSCompressor.METADATA_BYTES_PER_CHUNK;
       // Build corresponding vectors of destination addresses, source addresses and sizes.
       long[] destAddrs = new long[inputs.length];
       long[] srcAddrs = new long[inputs.length];
@@ -184,7 +190,7 @@ public class BatchedLZ4Decompressor {
         long destCopyAddr = devMetadata.getAddress();
         for (int inputIdx = 0; inputIdx < inputs.length; inputIdx++) {
           final BaseDeviceMemoryBuffer input = inputs[inputIdx];
-          final long copySize = chunksPerInput[inputIdx] * BatchedLZ4Compressor.METADATA_BYTES_PER_CHUNK;
+          final long copySize = chunksPerInput[inputIdx] * BatchedANSCompressor.METADATA_BYTES_PER_CHUNK;
           destAddrs[inputIdx] = destCopyAddr;
           srcAddrs[inputIdx] = input.getAddress();
           sizes[inputIdx] = copySize;

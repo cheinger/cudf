@@ -27,8 +27,8 @@ import ai.rapids.cudf.NvtxRange;
 
 import java.util.Arrays;
 
-/** Multi-buffer LZ4 compressor */
-public class BatchedLZ4Compressor {
+/** Multi-buffer ANS compressor */
+public class BatchedANSCompressor {
   static final long MAX_CHUNK_SIZE = 16777216;  // in bytes
   static final long CHUNK_ALIGN = 4L;
   // each chunk has a 64-bit integer value as metadata containing the compressed size
@@ -43,22 +43,22 @@ public class BatchedLZ4Compressor {
   }
 
   /**
-   * Construct a batched LZ4 compressor instance
+   * Construct a batched ANS compressor instance
    * @param chunkSize maximum amount of uncompressed data to compress as a single chunk. Inputs
    *                  larger than this will be compressed in multiple chunks.
    * @param targetIntermediateBufferSize desired maximum size of intermediate device buffers
    *                                     used during compression.
    */
-  public BatchedLZ4Compressor(long chunkSize, long targetIntermediateBufferSize) {
+  public BatchedANSCompressor(long chunkSize, long targetIntermediateBufferSize) {
     validateChunkSize(chunkSize);
     this.chunkSize = chunkSize;
-    this.maxOutputChunkSize = NvcompJni.batchedLZ4CompressGetMaxOutputChunkSize(chunkSize);
+    this.maxOutputChunkSize = NvcompJni.batchedANSCompressGetMaxOutputChunkSize(chunkSize);
     assert maxOutputChunkSize < Integer.MAX_VALUE;
     this.targetIntermediateBufferSize = Math.max(targetIntermediateBufferSize, maxOutputChunkSize);
   }
 
   /**
-   * Compress a batch of buffers with LZ4. The input buffers will be closed.
+   * Compress a batch of buffers with ANS. The input buffers will be closed.
    * @param origInputs buffers to compress
    * @param stream CUDA stream to use
    * @return compressed buffers corresponding to the input buffers
@@ -97,13 +97,13 @@ public class BatchedLZ4Compressor {
             compressedBuffers, outputChunkAddrs);
 
         long[] outputChunkSizes;
-        final long tempBufferSize = NvcompJni.batchedLZ4CompressGetTempSize(numChunks, chunkSize);
+        final long tempBufferSize = NvcompJni.batchedANSCompressGetTempSize(numChunks, chunkSize);
         try (DeviceMemoryBuffer addrsAndSizes =
                  putAddrsAndSizesOnDevice(inputChunkAddrs, inputChunkSizes, outputChunkAddrs, stream);
              DeviceMemoryBuffer tempBuffer = DeviceMemoryBuffer.allocate(tempBufferSize, stream)) {
           final long devOutputAddrsPtr = addrsAndSizes.getAddress() + numChunks * 8L;
           final long devInputSizesPtr = devOutputAddrsPtr + numChunks * 8L;
-          NvcompJni.batchedLZ4CompressAsync(
+          NvcompJni.batchedANSCompressAsync(
               addrsAndSizes.getAddress(),
               devInputSizesPtr,
               chunkSize,
@@ -184,6 +184,7 @@ public class BatchedLZ4Compressor {
         inputChunkAddrs[chunkIdx] = input.getAddress() + i * chunkSize;
         inputChunkSizes[chunkIdx] = (i != numChunksInBuffer - 1) ? chunkSize
             : (input.getLength() - (long) i * chunkSize);
+        //assert inputChunkSizes[chunkIdx] >= 32: "chunksize: " + inputChunkSizes[chunkIdx];
         ++chunkIdx;
       }
     }
