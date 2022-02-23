@@ -51,18 +51,18 @@ export CUDACXX=/usr/local/cuda/bin/nvcc
 export LIBCUDF_KERNEL_CACHE_PATH=/rapids
 
 ###### Build libcudf ######
-rm -rf "$WORKSPACE/cpp/build"
-mkdir -p "$WORKSPACE/cpp/build"
+#rm -rf "$WORKSPACE/cpp/build"
+#mkdir -p "$WORKSPACE/cpp/build"
 cd "$WORKSPACE/cpp/build"
-cmake .. -G"${CMAKE_GENERATOR}" \
-         -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
-         -DUSE_NVTX=$ENABLE_NVTX \
-         -DCUDF_USE_ARROW_STATIC=ON \
-         -DCUDF_ENABLE_ARROW_S3=OFF \
-         -DBUILD_TESTS=$BUILD_CPP_TESTS \
-         -DPER_THREAD_DEFAULT_STREAM=$ENABLE_PTDS \
-         -DRMM_LOGGING_LEVEL=$RMM_LOGGING_LEVEL \
-         -DBUILD_SHARED_LIBS=OFF
+#cmake .. -G"${CMAKE_GENERATOR}" \
+#         -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+#         -DUSE_NVTX=$ENABLE_NVTX \
+#         -DCUDF_USE_ARROW_STATIC=ON \
+#         -DCUDF_ENABLE_ARROW_S3=OFF \
+#         -DBUILD_TESTS=$BUILD_CPP_TESTS \
+#         -DPER_THREAD_DEFAULT_STREAM=$ENABLE_PTDS \
+#         -DRMM_LOGGING_LEVEL=$RMM_LOGGING_LEVEL \
+#         -DBUILD_SHARED_LIBS=OFF
 
 if [[ -z "${PARALLEL_LEVEL}" ]]; then
     cmake --build .

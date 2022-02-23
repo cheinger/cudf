@@ -57,7 +57,7 @@ void check_nvcomp_status(JNIEnv *env, nvcompStatus_t status) {
 
 extern "C" {
 
-JNIEXPORT jboolean JNICALL Java_ai_rapids_cudf_nvcomp_NvcompJni_isLZ4Data(JNIEnv *env, jclass,
+/*JNIEXPORT jboolean JNICALL Java_ai_rapids_cudf_nvcomp_NvcompJni_isLZ4Data(JNIEnv *env, jclass,
                                                                           jlong j_in_ptr,
                                                                           jlong j_in_size,
                                                                           jlong j_stream) {
@@ -78,7 +78,7 @@ JNIEXPORT jboolean JNICALL Java_ai_rapids_cudf_nvcomp_NvcompJni_isLZ4Metadata(JN
     return LZ4IsMetadata(reinterpret_cast<void *>(metadata_ptr));
   }
   CATCH_STD(env, 0)
-}
+}*/
 
 JNIEXPORT jlongArray JNICALL Java_ai_rapids_cudf_nvcomp_NvcompJni_lz4CompressConfigure(
     JNIEnv *env, jclass, jlong j_chunk_size, jlong j_uncompressed_size) {
