@@ -39,6 +39,8 @@
 
 #include <cuco/static_map.cuh>
 
+#include <cub/cub.cuh>
+
 namespace cudf {
 namespace detail {
 
@@ -56,6 +58,32 @@ struct make_pair_function {
 };
 
 }  // namespace
+
+std::mutex print_mtx;
+
+template<typename T>
+struct JoinSelectOp
+{
+    bool join_type_boolean_;
+    row_hash hash_probe_;
+    row_equality equality_probe_;
+    T hash_table_view_;
+
+    CUB_RUNTIME_FUNCTION __device__ __host__ __forceinline__ JoinSelectOp(bool join_type_boolean,
+                                                      row_hash hash_probe,
+                                                      row_equality equality_probe,
+                                                      T hash_table_view)
+                                                      : join_type_boolean_(join_type_boolean)
+                                                      , hash_probe_(hash_probe)
+                                                      , equality_probe_(equality_probe)
+                                                      , hash_table_view_(hash_table_view) {}
+
+    CUB_RUNTIME_FUNCTION __device__ __host__ __forceinline__ bool operator()(const size_type &idx) const {
+      // Look up this row. The hash function used here needs to map a (left) row index to the hash
+      // of the row, so it's a row hash. The equality check needs to verify
+      return hash_table_view_.contains(idx, hash_probe_, equality_probe_) == join_type_boolean_;
+    }
+};
 
 std::unique_ptr<rmm::device_uvector<cudf::size_type>> left_semi_anti_join(
   join_kind const kind,
@@ -78,8 +106,12 @@ std::unique_ptr<rmm::device_uvector<cudf::size_type>> left_semi_anti_join(
     return result;
   }
 
-  auto const left_num_rows  = left_keys.num_rows();
-  auto const right_num_rows = right_keys.num_rows();
+  auto left_num_rows  = left_keys.num_rows();
+  auto right_num_rows = right_keys.num_rows();
+
+  print_mtx.lock();
+  std::cout << "left_semi_anti_join - left_rows: " << left_num_rows << ", right_rows: " << right_num_rows << std::endl;
+  print_mtx.unlock();
 
   // flatten structs for the right and left and use that for the hash table
   auto right_flattened_tables = structs::detail::flatten_nested_columns(
@@ -140,8 +172,31 @@ std::unique_ptr<rmm::device_uvector<cudf::size_type>> left_semi_anti_join(
   auto gather_map =
     std::make_unique<rmm::device_uvector<cudf::size_type>>(left_num_rows, stream, mr);
 
+
+  // CUB -----------
+  
+// JoinSelectOp<decltype(hash_table_view)> select_op(join_type_boolean, hash_probe, equality_probe, hash_table_view);
+  void *d_temp_storage = NULL;
+  size_t temp_storage_bytes = 0;
+  rmm::device_uvector<size_type> num_selected(1, stream, mr);
+  rmm::device_uvector<bool> flagged(left_num_rows, stream, mr);
+  auto d_flagged = flagged.data();
+  auto c = thrust::counting_iterator<size_type>(0);
+  thrust::for_each(rmm::exec_policy(stream), c, c + left_num_rows,
+		  [d_flagged, hash_table_view, join_type_boolean, hash_probe, equality_probe]__device__(size_type idx) {
+ 			d_flagged[idx] = hash_table_view.contains(idx, hash_probe, equality_probe) == join_type_boolean;
+		  });
+
+  cub::DeviceSelect::Flagged(d_temp_storage, temp_storage_bytes, cub::CountingInputIterator<size_type>(0),  d_flagged, gather_map->begin(),
+                        num_selected.data(), left_num_rows, stream);
+
+  rmm::device_uvector<char> tmp_storage(temp_storage_bytes, stream, mr);
+  cub::DeviceSelect::Flagged((void*)tmp_storage.data(), temp_storage_bytes, cub::CountingInputIterator<size_type>(0), d_flagged, gather_map->begin(),
+                        num_selected.data(), left_num_rows, stream);
+
+
   // gather_map_end will be the end of valid data in gather_map
-  auto gather_map_end = thrust::copy_if(
+  /*auto gather_map_end = thrust::copy_if(
     rmm::exec_policy(stream),
     thrust::make_counting_iterator(0),
     thrust::make_counting_iterator(left_num_rows),
@@ -151,9 +206,11 @@ std::unique_ptr<rmm::device_uvector<cudf::size_type>> left_semi_anti_join(
       // Look up this row. The hash function used here needs to map a (left) row index to the hash
       // of the row, so it's a row hash. The equality check needs to verify
       return hash_table_view.contains(idx, hash_probe, equality_probe) == join_type_boolean;
-    });
+    });*/
+  size_t sz = 0;
+  cudaMemcpy(&sz, num_selected.data(), sizeof(size_type), cudaMemcpyDeviceToHost);
 
-  auto join_size = thrust::distance(gather_map->begin(), gather_map_end);
+  auto join_size = sz;//thrust::distance(gather_map->begin(), gather_map_end);
   gather_map->resize(join_size, stream);
   return gather_map;
 }
