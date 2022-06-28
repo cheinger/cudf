@@ -27,10 +27,6 @@
 #include <utility>
 #include <vector>
 
-#ifndef __my_inline__
-#define __my_inline__ inline
-#endif
-
 namespace cudf {
 
 namespace ast {
@@ -53,116 +49,164 @@ constexpr bool is_valid_unary_op = cuda::std::is_invocable_v<Op, T>;
  * @param args Forwarded arguments to `operator()` of `f`.
  */
 template <typename F, typename... Ts>
-CUDF_HOST_DEVICE constexpr void ast_operator_dispatcher(ast_operator op, F&& f, Ts&&... args)
+CUDF_HOST_DEVICE inline constexpr void ast_operator_dispatcher(ast_operator op, F&& f, Ts&&... args)
 {
-//  switch (op) {
-//    case ast_operator::ADD:
-      if (op == ast_operator::ADD) {
-        f.template operator()<ast_operator::ADD>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::SUB) {
+  switch (op) {
+    case ast_operator::ADD:
+      f.template operator()<ast_operator::ADD>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::SUB:
       f.template operator()<ast_operator::SUB>(std::forward<Ts>(args)...);
-     } else if (op == ast_operator::MUL ) {
-        f.template operator()<ast_operator::MUL>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::DIV ) {
-        f.template operator()<ast_operator::DIV>(std::forward<Ts>(args)...);
-      } else if ( op == ast_operator::TRUE_DIV ) {
-        f.template operator()<ast_operator::TRUE_DIV>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::FLOOR_DIV ) {
-        f.template operator()<ast_operator::FLOOR_DIV>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::MOD ) {
-        f.template operator()<ast_operator::MOD>(std::forward<Ts>(args)...);
-      } else if ( op ==ast_operator::PYMOD ){
-        f.template operator()<ast_operator::PYMOD>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::POW) {
-        f.template operator()<ast_operator::POW>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::EQUAL ) {
-        f.template operator()<ast_operator::EQUAL>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::NULL_EQUAL) {
-        f.template operator()<ast_operator::NULL_EQUAL>(std::forward<Ts>(args)...);
-      } else if( op ==  ast_operator::NOT_EQUAL ) {
-        f.template operator()<ast_operator::NOT_EQUAL>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::LESS ) {
-        f.template operator()<ast_operator::LESS>(std::forward<Ts>(args)...);
-      } else if ( op  == ast_operator::GREATER ) {
-        f.template operator()<ast_operator::GREATER>(std::forward<Ts>(args)...);
-      } else if ( op ==  ast_operator::LESS_EQUAL ) {
-        f.template operator()<ast_operator::LESS_EQUAL>(std::forward<Ts>(args)...);
-      } else if ( op ==  ast_operator::GREATER_EQUAL ) {
-        f.template operator()<ast_operator::GREATER_EQUAL>(std::forward<Ts>(args)...);
-      } else if ( op ==  ast_operator::BITWISE_AND ) {
-        f.template operator()<ast_operator::BITWISE_AND>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::BITWISE_OR ) {
-        f.template operator()<ast_operator::BITWISE_OR>(std::forward<Ts>(args)...);
-      } else if ( op == ast_operator::BITWISE_XOR ) {
+      break;
+    case ast_operator::MUL:
+      f.template operator()<ast_operator::MUL>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::DIV:
+      f.template operator()<ast_operator::DIV>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::TRUE_DIV:
+      f.template operator()<ast_operator::TRUE_DIV>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::FLOOR_DIV:
+      f.template operator()<ast_operator::FLOOR_DIV>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::MOD:
+      f.template operator()<ast_operator::MOD>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::PYMOD:
+      f.template operator()<ast_operator::PYMOD>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::POW:
+      f.template operator()<ast_operator::POW>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::EQUAL:
+      f.template operator()<ast_operator::EQUAL>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::NULL_EQUAL:
+      f.template operator()<ast_operator::NULL_EQUAL>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::NOT_EQUAL:
+      f.template operator()<ast_operator::NOT_EQUAL>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::LESS:
+      f.template operator()<ast_operator::LESS>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::GREATER:
+      f.template operator()<ast_operator::GREATER>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::LESS_EQUAL:
+      f.template operator()<ast_operator::LESS_EQUAL>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::GREATER_EQUAL:
+      f.template operator()<ast_operator::GREATER_EQUAL>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::BITWISE_AND:
+      f.template operator()<ast_operator::BITWISE_AND>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::BITWISE_OR:
+      f.template operator()<ast_operator::BITWISE_OR>(std::forward<Ts>(args)...);
+      break;
+    case ast_operator::BITWISE_XOR:
       f.template operator()<ast_operator::BITWISE_XOR>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::LOGICAL_AND ) {
+      break;
+    case ast_operator::LOGICAL_AND:
       f.template operator()<ast_operator::LOGICAL_AND>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::NULL_LOGICAL_AND) {
+      break;
+    case ast_operator::NULL_LOGICAL_AND:
       f.template operator()<ast_operator::NULL_LOGICAL_AND>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::LOGICAL_OR ) {
+      break;
+    case ast_operator::LOGICAL_OR:
       f.template operator()<ast_operator::LOGICAL_OR>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::NULL_LOGICAL_OR ) {
+      break;
+    case ast_operator::NULL_LOGICAL_OR:
       f.template operator()<ast_operator::NULL_LOGICAL_OR>(std::forward<Ts>(args)...);
-      } else if (op ==ast_operator::IDENTITY ) {
+      break;
+    case ast_operator::IDENTITY:
       f.template operator()<ast_operator::IDENTITY>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::SIN ) {
+      break;
+    case ast_operator::SIN:
       f.template operator()<ast_operator::SIN>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::COS ) {
+      break;
+    case ast_operator::COS:
       f.template operator()<ast_operator::COS>(std::forward<Ts>(args)...);
-      } else if (op ==ast_operator::TAN ) {
+      break;
+    case ast_operator::TAN:
       f.template operator()<ast_operator::TAN>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::ARCSIN ) {
+      break;
+    case ast_operator::ARCSIN:
       f.template operator()<ast_operator::ARCSIN>(std::forward<Ts>(args)...);
-      } else if (op ==ast_operator::ARCCOS ) {
+      break;
+    case ast_operator::ARCCOS:
       f.template operator()<ast_operator::ARCCOS>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::ARCTAN ) {
+      break;
+    case ast_operator::ARCTAN:
       f.template operator()<ast_operator::ARCTAN>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::SINH){
+      break;
+    case ast_operator::SINH:
       f.template operator()<ast_operator::SINH>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::COSH){
+      break;
+    case ast_operator::COSH:
       f.template operator()<ast_operator::COSH>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::TANH){
+      break;
+    case ast_operator::TANH:
       f.template operator()<ast_operator::TANH>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::ARCSINH){
+      break;
+    case ast_operator::ARCSINH:
       f.template operator()<ast_operator::ARCSINH>(std::forward<Ts>(args)...);
-      } else if (op ==ast_operator::ARCCOSH){
+      break;
+    case ast_operator::ARCCOSH:
       f.template operator()<ast_operator::ARCCOSH>(std::forward<Ts>(args)...);
-      } else if (op ==ast_operator::ARCTANH){
+      break;
+    case ast_operator::ARCTANH:
       f.template operator()<ast_operator::ARCTANH>(std::forward<Ts>(args)...);
-      } else if (op ==ast_operator::EXP){
+      break;
+    case ast_operator::EXP:
       f.template operator()<ast_operator::EXP>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::LOG){
+      break;
+    case ast_operator::LOG:
       f.template operator()<ast_operator::LOG>(std::forward<Ts>(args)...);
-      } else if (op ==ast_operator::SQRT){
+      break;
+    case ast_operator::SQRT:
       f.template operator()<ast_operator::SQRT>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::CBRT){
+      break;
+    case ast_operator::CBRT:
       f.template operator()<ast_operator::CBRT>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::CEIL){
+      break;
+    case ast_operator::CEIL:
       f.template operator()<ast_operator::CEIL>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::FLOOR){
+      break;
+    case ast_operator::FLOOR:
       f.template operator()<ast_operator::FLOOR>(std::forward<Ts>(args)...);
-      } else if (op ==ast_operator::ABS){
+      break;
+    case ast_operator::ABS:
       f.template operator()<ast_operator::ABS>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::RINT){
+      break;
+    case ast_operator::RINT:
       f.template operator()<ast_operator::RINT>(std::forward<Ts>(args)...);
-     } else if (op == ast_operator::BIT_INVERT){
+      break;
+    case ast_operator::BIT_INVERT:
       f.template operator()<ast_operator::BIT_INVERT>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::NOT){
+      break;
+    case ast_operator::NOT:
       f.template operator()<ast_operator::NOT>(std::forward<Ts>(args)...);
-      } else if (op ==ast_operator::CAST_TO_INT64){
+      break;
+    case ast_operator::CAST_TO_INT64:
       f.template operator()<ast_operator::CAST_TO_INT64>(std::forward<Ts>(args)...);
-     } else if (op == ast_operator::CAST_TO_UINT64){
+      break;
+    case ast_operator::CAST_TO_UINT64:
       f.template operator()<ast_operator::CAST_TO_UINT64>(std::forward<Ts>(args)...);
-      } else if (op == ast_operator::CAST_TO_FLOAT64){
+      break;
+    case ast_operator::CAST_TO_FLOAT64:
       f.template operator()<ast_operator::CAST_TO_FLOAT64>(std::forward<Ts>(args)...);
-      } else {
+      break;
+    default: {
 #ifndef __CUDA_ARCH__
       CUDF_FAIL("Invalid operator.");
 #else
       CUDF_UNREACHABLE("Invalid operator.");
 #endif
     }
-//  }
+  }
 }
 
 /**
@@ -188,7 +232,7 @@ struct operator_functor<ast_operator::ADD, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs + rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs + rhs)
   {
     return lhs + rhs;
   }
@@ -199,7 +243,7 @@ struct operator_functor<ast_operator::SUB, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs - rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs - rhs)
   {
     return lhs - rhs;
   }
@@ -210,7 +254,7 @@ struct operator_functor<ast_operator::MUL, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs * rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs * rhs)
   {
     return lhs * rhs;
   }
@@ -221,7 +265,7 @@ struct operator_functor<ast_operator::DIV, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs / rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs / rhs)
   {
     return lhs / rhs;
   }
@@ -232,7 +276,7 @@ struct operator_functor<ast_operator::TRUE_DIV, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(static_cast<double>(lhs) / static_cast<double>(rhs))
   {
     return static_cast<double>(lhs) / static_cast<double>(rhs);
@@ -244,7 +288,7 @@ struct operator_functor<ast_operator::FLOOR_DIV, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(floor(static_cast<double>(lhs) / static_cast<double>(rhs)))
   {
     return floor(static_cast<double>(lhs) / static_cast<double>(rhs));
@@ -259,7 +303,7 @@ struct operator_functor<ast_operator::MOD, false> {
             typename RHS,
             typename CommonType                               = std::common_type_t<LHS, RHS>,
             std::enable_if_t<std::is_integral_v<CommonType>>* = nullptr>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(static_cast<CommonType>(lhs) % static_cast<CommonType>(rhs))
   {
     return static_cast<CommonType>(lhs) % static_cast<CommonType>(rhs);
@@ -269,7 +313,7 @@ struct operator_functor<ast_operator::MOD, false> {
             typename RHS,
             typename CommonType                                  = std::common_type_t<LHS, RHS>,
             std::enable_if_t<std::is_same_v<CommonType, float>>* = nullptr>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(fmodf(static_cast<CommonType>(lhs), static_cast<CommonType>(rhs)))
   {
     return fmodf(static_cast<CommonType>(lhs), static_cast<CommonType>(rhs));
@@ -279,7 +323,7 @@ struct operator_functor<ast_operator::MOD, false> {
             typename RHS,
             typename CommonType                                   = std::common_type_t<LHS, RHS>,
             std::enable_if_t<std::is_same_v<CommonType, double>>* = nullptr>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(fmod(static_cast<CommonType>(lhs), static_cast<CommonType>(rhs)))
   {
     return fmod(static_cast<CommonType>(lhs), static_cast<CommonType>(rhs));
@@ -294,7 +338,7 @@ struct operator_functor<ast_operator::PYMOD, false> {
             typename RHS,
             typename CommonType                               = std::common_type_t<LHS, RHS>,
             std::enable_if_t<std::is_integral_v<CommonType>>* = nullptr>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(((static_cast<CommonType>(lhs) % static_cast<CommonType>(rhs)) +
                  static_cast<CommonType>(rhs)) %
                 static_cast<CommonType>(rhs))
@@ -308,7 +352,7 @@ struct operator_functor<ast_operator::PYMOD, false> {
             typename RHS,
             typename CommonType                                  = std::common_type_t<LHS, RHS>,
             std::enable_if_t<std::is_same_v<CommonType, float>>* = nullptr>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(fmodf(fmodf(static_cast<CommonType>(lhs), static_cast<CommonType>(rhs)) +
                         static_cast<CommonType>(rhs),
                       static_cast<CommonType>(rhs)))
@@ -322,7 +366,7 @@ struct operator_functor<ast_operator::PYMOD, false> {
             typename RHS,
             typename CommonType                                   = std::common_type_t<LHS, RHS>,
             std::enable_if_t<std::is_same_v<CommonType, double>>* = nullptr>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(fmod(fmod(static_cast<CommonType>(lhs), static_cast<CommonType>(rhs)) +
                        static_cast<CommonType>(rhs),
                      static_cast<CommonType>(rhs)))
@@ -338,7 +382,7 @@ struct operator_functor<ast_operator::POW, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(std::pow(lhs, rhs))
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(std::pow(lhs, rhs))
   {
     return std::pow(lhs, rhs);
   }
@@ -349,7 +393,7 @@ struct operator_functor<ast_operator::EQUAL, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs == rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs == rhs)
   {
     return lhs == rhs;
   }
@@ -366,7 +410,7 @@ struct operator_functor<ast_operator::NOT_EQUAL, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs != rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs != rhs)
   {
     return lhs != rhs;
   }
@@ -377,7 +421,7 @@ struct operator_functor<ast_operator::LESS, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs < rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs < rhs)
   {
     return lhs < rhs;
   }
@@ -388,7 +432,7 @@ struct operator_functor<ast_operator::GREATER, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs > rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs > rhs)
   {
     return lhs > rhs;
   }
@@ -399,7 +443,7 @@ struct operator_functor<ast_operator::LESS_EQUAL, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs <= rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs <= rhs)
   {
     return lhs <= rhs;
   }
@@ -410,7 +454,7 @@ struct operator_functor<ast_operator::GREATER_EQUAL, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs >= rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs >= rhs)
   {
     return lhs >= rhs;
   }
@@ -421,7 +465,7 @@ struct operator_functor<ast_operator::BITWISE_AND, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs & rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs & rhs)
   {
     return lhs & rhs;
   }
@@ -432,7 +476,7 @@ struct operator_functor<ast_operator::BITWISE_OR, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs | rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs | rhs)
   {
     return lhs | rhs;
   }
@@ -443,7 +487,7 @@ struct operator_functor<ast_operator::BITWISE_XOR, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs ^ rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs ^ rhs)
   {
     return lhs ^ rhs;
   }
@@ -454,7 +498,7 @@ struct operator_functor<ast_operator::LOGICAL_AND, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs && rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs && rhs)
   {
     return lhs && rhs;
   }
@@ -471,7 +515,7 @@ struct operator_functor<ast_operator::LOGICAL_OR, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS lhs, RHS rhs) -> decltype(lhs || rhs)
+  __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs || rhs)
   {
     return lhs || rhs;
   }
@@ -488,7 +532,7 @@ struct operator_functor<ast_operator::IDENTITY, false> {
   static constexpr auto arity{1};
 
   template <typename InputT>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(input)
+  __device__ inline auto operator()(InputT input) -> decltype(input)
   {
     return input;
   }
@@ -499,7 +543,7 @@ struct operator_functor<ast_operator::SIN, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::sin(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::sin(input))
   {
     return std::sin(input);
   }
@@ -510,7 +554,7 @@ struct operator_functor<ast_operator::COS, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::cos(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::cos(input))
   {
     return std::cos(input);
   }
@@ -521,7 +565,7 @@ struct operator_functor<ast_operator::TAN, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::tan(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::tan(input))
   {
     return std::tan(input);
   }
@@ -532,7 +576,7 @@ struct operator_functor<ast_operator::ARCSIN, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::asin(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::asin(input))
   {
     return std::asin(input);
   }
@@ -543,7 +587,7 @@ struct operator_functor<ast_operator::ARCCOS, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::acos(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::acos(input))
   {
     return std::acos(input);
   }
@@ -554,7 +598,7 @@ struct operator_functor<ast_operator::ARCTAN, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::atan(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::atan(input))
   {
     return std::atan(input);
   }
@@ -565,7 +609,7 @@ struct operator_functor<ast_operator::SINH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::sinh(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::sinh(input))
   {
     return std::sinh(input);
   }
@@ -576,7 +620,7 @@ struct operator_functor<ast_operator::COSH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::cosh(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::cosh(input))
   {
     return std::cosh(input);
   }
@@ -587,7 +631,7 @@ struct operator_functor<ast_operator::TANH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::tanh(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::tanh(input))
   {
     return std::tanh(input);
   }
@@ -598,7 +642,7 @@ struct operator_functor<ast_operator::ARCSINH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::asinh(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::asinh(input))
   {
     return std::asinh(input);
   }
@@ -609,7 +653,7 @@ struct operator_functor<ast_operator::ARCCOSH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::acosh(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::acosh(input))
   {
     return std::acosh(input);
   }
@@ -620,7 +664,7 @@ struct operator_functor<ast_operator::ARCTANH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::atanh(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::atanh(input))
   {
     return std::atanh(input);
   }
@@ -631,7 +675,7 @@ struct operator_functor<ast_operator::EXP, false> {
   static constexpr auto arity{1};
 
   template <typename InputT>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::exp(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::exp(input))
   {
     return std::exp(input);
   }
@@ -642,7 +686,7 @@ struct operator_functor<ast_operator::LOG, false> {
   static constexpr auto arity{1};
 
   template <typename InputT>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::log(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::log(input))
   {
     return std::log(input);
   }
@@ -653,7 +697,7 @@ struct operator_functor<ast_operator::SQRT, false> {
   static constexpr auto arity{1};
 
   template <typename InputT>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::sqrt(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::sqrt(input))
   {
     return std::sqrt(input);
   }
@@ -664,7 +708,7 @@ struct operator_functor<ast_operator::CBRT, false> {
   static constexpr auto arity{1};
 
   template <typename InputT>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::cbrt(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::cbrt(input))
   {
     return std::cbrt(input);
   }
@@ -675,7 +719,7 @@ struct operator_functor<ast_operator::CEIL, false> {
   static constexpr auto arity{1};
 
   template <typename InputT>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::ceil(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::ceil(input))
   {
     return std::ceil(input);
   }
@@ -686,7 +730,7 @@ struct operator_functor<ast_operator::FLOOR, false> {
   static constexpr auto arity{1};
 
   template <typename InputT>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::floor(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::floor(input))
   {
     return std::floor(input);
   }
@@ -698,13 +742,13 @@ struct operator_functor<ast_operator::ABS, false> {
 
   // Only accept signed or unsigned types (both require is_arithmetic<T> to be true)
   template <typename InputT, std::enable_if_t<std::is_signed_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::abs(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::abs(input))
   {
     return std::abs(input);
   }
 
   template <typename InputT, std::enable_if_t<std::is_unsigned_v<InputT>>* = nullptr>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(input)
+  __device__ inline auto operator()(InputT input) -> decltype(input)
   {
     return input;
   }
@@ -715,7 +759,7 @@ struct operator_functor<ast_operator::RINT, false> {
   static constexpr auto arity{1};
 
   template <typename InputT>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(std::rint(input))
+  __device__ inline auto operator()(InputT input) -> decltype(std::rint(input))
   {
     return std::rint(input);
   }
@@ -726,7 +770,7 @@ struct operator_functor<ast_operator::BIT_INVERT, false> {
   static constexpr auto arity{1};
 
   template <typename InputT>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(~input)
+  __device__ inline auto operator()(InputT input) -> decltype(~input)
   {
     return ~input;
   }
@@ -737,7 +781,7 @@ struct operator_functor<ast_operator::NOT, false> {
   static constexpr auto arity{1};
 
   template <typename InputT>
-  __device__ __my_inline__ auto operator()(InputT input) -> decltype(!input)
+  __device__ inline auto operator()(InputT input) -> decltype(!input)
   {
     return !input;
   }
@@ -747,7 +791,7 @@ template <typename To>
 struct cast {
   static constexpr auto arity{1};
   template <typename From>
-  __device__ __my_inline__ auto operator()(From f) -> decltype(static_cast<To>(f))
+  __device__ inline auto operator()(From f) -> decltype(static_cast<To>(f))
   {
     return static_cast<To>(f);
   }
@@ -776,7 +820,7 @@ struct operator_functor<op, true> {
             typename RHS,
             std::size_t arity_placeholder             = arity,
             std::enable_if_t<arity_placeholder == 2>* = nullptr>
-  __device__ __my_inline__ auto operator()(LHS const lhs, RHS const rhs)
+  __device__ inline auto operator()(LHS const lhs, RHS const rhs)
     -> possibly_null_value_t<decltype(NonNullOperator{}(*lhs, *rhs)), true>
   {
     using Out = possibly_null_value_t<decltype(NonNullOperator{}(*lhs, *rhs)), true>;
@@ -786,7 +830,7 @@ struct operator_functor<op, true> {
   template <typename Input,
             std::size_t arity_placeholder             = arity,
             std::enable_if_t<arity_placeholder == 1>* = nullptr>
-  __device__ __my_inline__ auto operator()(Input const input)
+  __device__ inline auto operator()(Input const input)
     -> possibly_null_value_t<decltype(NonNullOperator{}(*input)), true>
   {
     using Out = possibly_null_value_t<decltype(NonNullOperator{}(*input)), true>;
@@ -802,7 +846,7 @@ struct operator_functor<ast_operator::NULL_EQUAL, true> {
   static constexpr auto arity = NonNullOperator::arity;
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS const lhs, RHS const rhs)
+  __device__ inline auto operator()(LHS const lhs, RHS const rhs)
     -> possibly_null_value_t<decltype(NonNullOperator{}(*lhs, *rhs)), true>
   {
     // Case 1: Neither is null, so the output is given by the operation.
@@ -823,7 +867,7 @@ struct operator_functor<ast_operator::NULL_LOGICAL_AND, true> {
   static constexpr auto arity = NonNullOperator::arity;
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS const lhs, RHS const rhs)
+  __device__ inline auto operator()(LHS const lhs, RHS const rhs)
     -> possibly_null_value_t<decltype(NonNullOperator{}(*lhs, *rhs)), true>
   {
     // Case 1: Neither is null, so the output is given by the operation.
@@ -846,7 +890,7 @@ struct operator_functor<ast_operator::NULL_LOGICAL_OR, true> {
   static constexpr auto arity = NonNullOperator::arity;
 
   template <typename LHS, typename RHS>
-  __device__ __my_inline__ auto operator()(LHS const lhs, RHS const rhs)
+  __device__ inline auto operator()(LHS const lhs, RHS const rhs)
     -> possibly_null_value_t<decltype(NonNullOperator{}(*lhs, *rhs)), true>
   {
     // Case 1: Neither is null, so the output is given by the operation.
@@ -876,7 +920,7 @@ struct single_dispatch_binary_operator_types {
             typename F,
             typename... Ts,
             std::enable_if_t<is_valid_binary_op<OperatorFunctor, LHS, LHS>>* = nullptr>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(F&& f, Ts&&... args)
+  CUDF_HOST_DEVICE inline void operator()(F&& f, Ts&&... args)
   {
     f.template operator()<OperatorFunctor, LHS, LHS>(std::forward<Ts>(args)...);
   }
@@ -885,7 +929,7 @@ struct single_dispatch_binary_operator_types {
             typename F,
             typename... Ts,
             std::enable_if_t<!is_valid_binary_op<OperatorFunctor, LHS, LHS>>* = nullptr>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(F&& f, Ts&&... args)
+  CUDF_HOST_DEVICE inline void operator()(F&& f, Ts&&... args)
   {
 #ifndef __CUDA_ARCH__
     CUDF_FAIL("Invalid binary operation.");
@@ -914,7 +958,7 @@ struct type_dispatch_binary_op {
    * @param args Forwarded arguments to `operator()` of `f`.
    */
   template <ast_operator op, typename F, typename... Ts>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(cudf::data_type lhs_type,
+  CUDF_HOST_DEVICE inline void operator()(cudf::data_type lhs_type,
                                           cudf::data_type rhs_type,
                                           F&& f,
                                           Ts&&... args)
@@ -940,7 +984,7 @@ struct type_dispatch_binary_op {
  * @param args Forwarded arguments to `operator()` of `f`.
  */
 template <typename F, typename... Ts>
-CUDF_HOST_DEVICE __my_inline__ constexpr void binary_operator_dispatcher(
+CUDF_HOST_DEVICE inline constexpr void binary_operator_dispatcher(
   ast_operator op, cudf::data_type lhs_type, cudf::data_type rhs_type, F&& f, Ts&&... args)
 {
   ast_operator_dispatcher(op,
@@ -965,7 +1009,7 @@ struct dispatch_unary_operator_types {
             typename F,
             typename... Ts,
             std::enable_if_t<is_valid_unary_op<OperatorFunctor, InputT>>* = nullptr>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(F&& f, Ts&&... args)
+  CUDF_HOST_DEVICE inline void operator()(F&& f, Ts&&... args)
   {
     f.template operator()<OperatorFunctor, InputT>(std::forward<Ts>(args)...);
   }
@@ -974,7 +1018,7 @@ struct dispatch_unary_operator_types {
             typename F,
             typename... Ts,
             std::enable_if_t<!is_valid_unary_op<OperatorFunctor, InputT>>* = nullptr>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(F&& f, Ts&&... args)
+  CUDF_HOST_DEVICE inline void operator()(F&& f, Ts&&... args)
   {
 #ifndef __CUDA_ARCH__
     CUDF_FAIL("Invalid unary operation.");
@@ -989,7 +1033,7 @@ struct dispatch_unary_operator_types {
  */
 struct type_dispatch_unary_op {
   template <ast_operator op, typename F, typename... Ts>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(cudf::data_type input_type, F&& f, Ts&&... args)
+  CUDF_HOST_DEVICE inline void operator()(cudf::data_type input_type, F&& f, Ts&&... args)
   {
     type_dispatcher(
       input_type,
@@ -1010,7 +1054,7 @@ struct type_dispatch_unary_op {
  * @param args Forwarded arguments to `operator()` of `f`.
  */
 template <typename F, typename... Ts>
-CUDF_HOST_DEVICE __my_inline__ constexpr void unary_operator_dispatcher(ast_operator op,
+CUDF_HOST_DEVICE inline constexpr void unary_operator_dispatcher(ast_operator op,
                                                                  cudf::data_type input_type,
                                                                  F&& f,
                                                                  Ts&&... args)
@@ -1038,7 +1082,7 @@ struct return_type_functor {
             typename LHS,
             typename RHS,
             std::enable_if_t<is_valid_binary_op<OperatorFunctor, LHS, RHS>>* = nullptr>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(cudf::data_type& result)
+  CUDF_HOST_DEVICE inline void operator()(cudf::data_type& result)
   {
     using Out = cuda::std::invoke_result_t<OperatorFunctor, LHS, RHS>;
     result    = cudf::data_type(cudf::type_to_id<Out>());
@@ -1048,7 +1092,7 @@ struct return_type_functor {
             typename LHS,
             typename RHS,
             std::enable_if_t<!is_valid_binary_op<OperatorFunctor, LHS, RHS>>* = nullptr>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(cudf::data_type& result)
+  CUDF_HOST_DEVICE inline void operator()(cudf::data_type& result)
   {
 #ifndef __CUDA_ARCH__
     CUDF_FAIL("Invalid binary operation. Return type cannot be determined.");
@@ -1067,7 +1111,7 @@ struct return_type_functor {
   template <typename OperatorFunctor,
             typename T,
             std::enable_if_t<is_valid_unary_op<OperatorFunctor, T>>* = nullptr>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(cudf::data_type& result)
+  CUDF_HOST_DEVICE inline void operator()(cudf::data_type& result)
   {
     using Out = cuda::std::invoke_result_t<OperatorFunctor, T>;
     result    = cudf::data_type(cudf::type_to_id<Out>());
@@ -1076,7 +1120,7 @@ struct return_type_functor {
   template <typename OperatorFunctor,
             typename T,
             std::enable_if_t<!is_valid_unary_op<OperatorFunctor, T>>* = nullptr>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(cudf::data_type& result)
+  CUDF_HOST_DEVICE inline void operator()(cudf::data_type& result)
   {
 #ifndef __CUDA_ARCH__
     CUDF_FAIL("Invalid unary operation. Return type cannot be determined.");
@@ -1115,7 +1159,7 @@ inline cudf::data_type ast_operator_return_type(ast_operator op,
  */
 struct arity_functor {
   template <ast_operator op>
-  CUDF_HOST_DEVICE __my_inline__ void operator()(cudf::size_type& result)
+  CUDF_HOST_DEVICE inline void operator()(cudf::size_type& result)
   {
     // Arity is not dependent on null handling, so just use the false implementation here.
     result = operator_functor<op, false>::arity;
