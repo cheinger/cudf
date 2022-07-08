@@ -222,6 +222,149 @@ struct single_dispatch_binary_operator {
 };
 
 /**
+ * @brief Utility class to convert a leaf column element into its extrema type
+ *
+ * @tparam T Column type
+ */
+template <typename T>
+class my_extrema_type {
+private:
+    using integral_extrema_type = typename std::conditional_t<std::is_signed_v<T>, int64_t, uint64_t>;
+
+    using arithmetic_extrema_type =
+            typename std::conditional_t<std::is_integral_v<T>, integral_extrema_type, double>;
+
+    using non_arithmetic_extrema_type = typename std::conditional_t<
+            cudf::is_fixed_point<T>() or cudf::is_duration<T>() or cudf::is_timestamp<T>(),
+            int64_t,
+            typename std::conditional_t<std::is_same_v<T, string_view>, string_view, T>>;
+
+    // unsigned int/bool -> uint64_t
+    // signed int        -> int64_t
+    // float/double      -> double
+    // decimal32/64      -> int64_t
+    // duration_[T]      -> int64_t
+    // string_view       -> string_view
+    // timestamp_[T]     -> int64_t
+
+public:
+    // Does type T have an extrema?
+    static constexpr bool is_supported = std::is_arithmetic_v<T> or std::is_same_v<T, string_view> or
+                                         cudf::is_duration<T>() or cudf::is_timestamp<T>() or
+                                         cudf::is_fixed_point<T>();
+
+    using type = typename std::
+    conditional_t<std::is_arithmetic_v<T>, arithmetic_extrema_type, non_arithmetic_extrema_type>;
+
+    /**
+     * @brief Function that converts an element of a leaf column into its extrema type
+     */
+    __device__ static type convert(const T& val)
+    {
+      if constexpr (std::is_arithmetic_v<T>/* or std::is_same_v<T, string_view>*/) {
+        return static_cast<type>(val);
+      } else if constexpr (cudf::is_fixed_point<T>()) {
+        return val.value();
+      } else if constexpr (cudf::is_duration<T>()) {
+        return val.count();
+      } else if constexpr (cudf::is_timestamp<T>()) {
+        return val.time_since_epoch().count();
+      } else {
+        return val;
+      }
+    }
+};
+
+template <bool has_nulls>
+struct resolve_input_operator {
+public:
+    __device__ inline resolve_input_operator(table_device_view const& left,
+                                             table_device_view const& right,
+                                             expression_device_view const& plan)
+      : left(left), right(right), plan(plan)
+    {
+    }
+
+    /**
+   * @brief Resolves an input data reference into a value.
+   *
+   * Only input columns (COLUMN), literal values (LITERAL), and intermediates (INTERMEDIATE) are
+   * supported as input data references. Intermediates must be of fixed width less than or equal to
+   * sizeof(std::int64_t). This requirement on intermediates is enforced by the linearizer.
+   *
+   * @tparam Element Type of element to return.
+   * @tparam has_nulls Whether or not the result data is nullable.
+   * @param device_data_reference Data reference to resolve.
+   * @param row_index Row index of data column.
+   * @return Element The type- and null-resolved data.
+   */
+    template <typename Element, CUDF_ENABLE_IF(column_device_view::has_element_accessor<Element>())>
+    __device__ inline possibly_null_value_t<typename my_extrema_type<Element>::type, has_nulls> operator()(
+            detail::device_data_reference const& input_reference,
+            IntermediateDataType<has_nulls>* thread_intermediate_storage,
+            cudf::size_type left_row_index,
+            thrust::optional<cudf::size_type> right_row_index = {}) const
+    {
+      // TODO: Everywhere in the code assumes that the table reference is either
+      // left or right. Should we error-check somewhere to prevent
+      // table_reference::OUTPUT from being specified?
+      using ReturnType = possibly_null_value_t<typename my_extrema_type<Element>::type, has_nulls>;
+      if (input_reference.reference_type == detail::device_data_reference_type::COLUMN) {
+        // If we have nullable data, return an empty nullable type with no value if the data is null.
+        auto const& table = (input_reference.table_source == table_reference::LEFT) ? left : right;
+        // Note that the code below assumes that a right index has been passed in
+        // any case where input_reference.table_source == table_reference::RIGHT.
+        // Otherwise, behavior is undefined.
+        auto const row_index =
+                (input_reference.table_source == table_reference::LEFT) ? left_row_index : *right_row_index;
+        if constexpr (has_nulls) {
+          return table.column(input_reference.data_index).is_valid(row_index)
+                 ? ReturnType(my_extrema_type<Element>::convert(table.column(input_reference.data_index).element<Element>(row_index)))
+                 : ReturnType();
+
+        } else {
+          return ReturnType(my_extrema_type<Element>::convert(table.column(input_reference.data_index).element<Element>(row_index)));
+        }
+      } else if (input_reference.reference_type == detail::device_data_reference_type::LITERAL) {
+        if constexpr (has_nulls) {
+          return plan.literals[input_reference.data_index].is_valid()
+                 ? ReturnType(my_extrema_type<Element>::convert(plan.literals[input_reference.data_index].value<Element>()))
+                 : ReturnType();
+
+        } else {
+          return ReturnType(my_extrema_type<Element>::convert(plan.literals[input_reference.data_index].value<Element>()));
+        }
+      } else {  // Assumes input_reference.reference_type ==
+        // detail::device_data_reference_type::INTERMEDIATE
+        // Using memcpy instead of reinterpret_cast<Element*> for safe type aliasing
+        // Using a temporary variable ensures that the compiler knows the result is aligned
+        IntermediateDataType<has_nulls> intermediate =
+                thread_intermediate_storage[input_reference.data_index];
+        ReturnType tmp;
+        memcpy(&tmp, &intermediate, sizeof(ReturnType));
+        return tmp;
+      }
+      // Unreachable return used to silence compiler warnings.
+      return {};
+    }
+
+    template <typename Element,
+            CUDF_ENABLE_IF(not column_device_view::has_element_accessor<Element>())>
+    __device__ inline possibly_null_value_t<typename my_extrema_type<Element>::type, has_nulls> operator()(
+            detail::device_data_reference const& device_data_reference,
+            IntermediateDataType<has_nulls>* thread_intermediate_storage,
+            cudf::size_type left_row_index,
+            thrust::optional<cudf::size_type> right_row_index = {}) const
+    {
+      CUDF_UNREACHABLE("Unsupported type in resolve_input.");
+    }
+
+    table_device_view const& left;   ///< The left table to operate on.
+    table_device_view const& right;  ///< The right table to operate on.
+    expression_device_view const& plan;
+};
+
+/**
  * @brief The principal object for evaluating AST expressions on device.
  *
  * This class is designed for n-ary transform evaluation. It operates on two
@@ -358,10 +501,11 @@ struct expression_evaluator {
     ast_operator const op,
     IntermediateDataType<has_nulls>* thread_intermediate_storage) const
   {
-    auto const typed_input =
-      resolve_input<Input>(input, thread_intermediate_storage, input_row_index);
+    resolve_input_operator<has_nulls> resolve_operator{left, right, plan};
+    auto typed_input = resolve_operator.template operator()<Input>(input, thread_intermediate_storage, input_row_index);
+
     ast_operator_dispatcher(op,
-                            unary_expression_output_handler<Input>{},
+                            unary_expression_output_handler<typename my_extrema_type<Input>::type>{}, //unary_expression_output_handler<Input>{},
                             output_object,
                             output_row_index,
                             typed_input,
@@ -397,12 +541,19 @@ struct expression_evaluator {
     ast_operator const op,
     IntermediateDataType<has_nulls>* thread_intermediate_storage) const
   {
-    auto const typed_lhs =
-      resolve_input<LHS>(lhs, thread_intermediate_storage, left_row_index, right_row_index);
-    auto const typed_rhs =
-      resolve_input<RHS>(rhs, thread_intermediate_storage, left_row_index, right_row_index);
+//    auto const typed_lhs =
+//      resolve_input<LHS>(lhs, thread_intermediate_storage, left_row_index, right_row_index);
+//    auto const typed_rhs =
+//      resolve_input<RHS>(rhs, thread_intermediate_storage, left_row_index, right_row_index);
+
+    resolve_input_operator<has_nulls> lhs_resolve{left, right, plan};
+    resolve_input_operator<has_nulls> rhs_resolve{left, right, plan};
+
+    auto typed_lhs = lhs_resolve.template operator()<LHS>(lhs, thread_intermediate_storage, left_row_index, right_row_index);
+    auto typed_rhs = lhs_resolve.template operator()<RHS>(rhs, thread_intermediate_storage, left_row_index, right_row_index);
+
     ast_operator_dispatcher(op,
-                            binary_expression_output_handler<LHS, RHS>{},
+                            binary_expression_output_handler<typename my_extrema_type<LHS>::type, typename my_extrema_type<RHS>::type>{},
                             output_object,
                             output_row_index,
                             typed_lhs,
@@ -464,6 +615,7 @@ struct expression_evaluator {
           plan.data_references[plan.operator_source_indices[operator_source_index++]];
         auto input_row_index =
           input.table_source == table_reference::LEFT ? left_row_index : right_row_index;
+
         type_dispatcher(input.data_type,
                         *this,
                         output_object,
@@ -473,6 +625,7 @@ struct expression_evaluator {
                         output_row_index,
                         op,
                         thread_intermediate_storage);
+
       } else if (arity == 2) {
         // Binary operator
         auto const& lhs =
