@@ -70,12 +70,12 @@ CUDF_HOST_DEVICE inline constexpr void ast_operator_dispatcher(ast_operator op, 
     case ast_operator::FLOOR_DIV:
       f.template operator()<ast_operator::FLOOR_DIV>(std::forward<Ts>(args)...);
       break;
-    case ast_operator::MOD:
-      f.template operator()<ast_operator::MOD>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::PYMOD:
-      f.template operator()<ast_operator::PYMOD>(std::forward<Ts>(args)...);
-      break;
+//    case ast_operator::MOD:
+//      f.template operator()<ast_operator::MOD>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::PYMOD:
+//      f.template operator()<ast_operator::PYMOD>(std::forward<Ts>(args)...);
+//      break;
     case ast_operator::POW:
       f.template operator()<ast_operator::POW>(std::forward<Ts>(args)...);
       break;
@@ -227,11 +227,22 @@ template <ast_operator op, bool has_nulls>
 struct operator_functor {
 };
 
+        template<typename T>
+        constexpr bool is_operator_type_v = cuda::std::disjunction<std::is_arithmetic<T>,
+                cudf::is_timestamp_t<T>,
+                cudf::is_duration_t<T>,
+        std::is_same<T, dictionary32>,
+        std::is_same<T, cudf::list_view>,
+//                std::is_same<T, numeric::decimal32>,
+//                std::is_same<T, numeric::decimal64>,
+//                std::is_same<T, numeric::decimal128>,
+                std::is_same<T, cudf::struct_view>>::value;
+
 template <>
 struct operator_functor<ast_operator::ADD, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs + rhs)
   {
     return lhs + rhs;
@@ -242,7 +253,7 @@ template <>
 struct operator_functor<ast_operator::SUB, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs - rhs)
   {
     return lhs - rhs;
@@ -253,7 +264,7 @@ template <>
 struct operator_functor<ast_operator::MUL, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs * rhs)
   {
     return lhs * rhs;
@@ -264,7 +275,7 @@ template <>
 struct operator_functor<ast_operator::DIV, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs / rhs)
   {
     return lhs / rhs;
@@ -275,7 +286,7 @@ template <>
 struct operator_functor<ast_operator::TRUE_DIV, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(static_cast<double>(lhs) / static_cast<double>(rhs))
   {
@@ -287,7 +298,7 @@ template <>
 struct operator_functor<ast_operator::FLOOR_DIV, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(floor(static_cast<double>(lhs) / static_cast<double>(rhs)))
   {
@@ -381,18 +392,19 @@ template <>
 struct operator_functor<ast_operator::POW, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<std::is_arithmetic_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(std::pow(lhs, rhs))
   {
     return std::pow(lhs, rhs);
   }
 };
 
+
 template <>
 struct operator_functor<ast_operator::EQUAL, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs == rhs)
   {
     return lhs == rhs;
@@ -409,7 +421,7 @@ template <>
 struct operator_functor<ast_operator::NOT_EQUAL, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs != rhs)
   {
     return lhs != rhs;
@@ -420,7 +432,7 @@ template <>
 struct operator_functor<ast_operator::LESS, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+    template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs < rhs)
   {
     return lhs < rhs;
@@ -431,7 +443,7 @@ template <>
 struct operator_functor<ast_operator::GREATER, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+    template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs > rhs)
   {
     return lhs > rhs;
@@ -442,7 +454,7 @@ template <>
 struct operator_functor<ast_operator::LESS_EQUAL, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs <= rhs)
   {
     return lhs <= rhs;
@@ -453,7 +465,7 @@ template <>
 struct operator_functor<ast_operator::GREATER_EQUAL, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs >= rhs)
   {
     return lhs >= rhs;
@@ -464,7 +476,8 @@ template <>
 struct operator_functor<ast_operator::BITWISE_AND, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+//  template <typename LHS, typename RHS, std::enable_if_t<std::is_arithmetic_v<LHS>>* = nullptr>
+  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs & rhs)
   {
     return lhs & rhs;
@@ -475,7 +488,8 @@ template <>
 struct operator_functor<ast_operator::BITWISE_OR, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+//  template <typename LHS, typename RHS, std::enable_if_t<std::is_arithmetic_v<LHS>>* = nullptr>
+    template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs | rhs)
   {
     return lhs | rhs;
@@ -486,7 +500,8 @@ template <>
 struct operator_functor<ast_operator::BITWISE_XOR, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+//  template <typename LHS, typename RHS, std::enable_if_t<std::is_arithmetic_v<LHS>>* = nullptr>
+    template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs ^ rhs)
   {
     return lhs ^ rhs;
@@ -497,7 +512,8 @@ template <>
 struct operator_functor<ast_operator::LOGICAL_AND, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+//  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
+    template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs && rhs)
   {
     return lhs && rhs;
@@ -514,7 +530,8 @@ template <>
 struct operator_functor<ast_operator::LOGICAL_OR, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS>
+//  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
+    template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs || rhs)
   {
     return lhs || rhs;
@@ -531,7 +548,8 @@ template <>
 struct operator_functor<ast_operator::IDENTITY, false> {
   static constexpr auto arity{1};
 
-  template <typename InputT>
+//  template <typename InputT, std::enable_if_t<is_operator_type_v<InputT>>* = nullptr>
+  template <typename InputT, std::enable_if_t<is_operator_type_v<InputT>>* = nullptr>
   __device__ inline auto operator()(InputT input) -> decltype(input)
   {
     return input;
@@ -674,7 +692,7 @@ template <>
 struct operator_functor<ast_operator::EXP, false> {
   static constexpr auto arity{1};
 
-  template <typename InputT>
+  template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
   __device__ inline auto operator()(InputT input) -> decltype(std::exp(input))
   {
     return std::exp(input);
@@ -685,7 +703,7 @@ template <>
 struct operator_functor<ast_operator::LOG, false> {
   static constexpr auto arity{1};
 
-  template <typename InputT>
+  template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
   __device__ inline auto operator()(InputT input) -> decltype(std::log(input))
   {
     return std::log(input);
@@ -696,7 +714,7 @@ template <>
 struct operator_functor<ast_operator::SQRT, false> {
   static constexpr auto arity{1};
 
-  template <typename InputT>
+  template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
   __device__ inline auto operator()(InputT input) -> decltype(std::sqrt(input))
   {
     return std::sqrt(input);
@@ -707,7 +725,7 @@ template <>
 struct operator_functor<ast_operator::CBRT, false> {
   static constexpr auto arity{1};
 
-  template <typename InputT>
+  template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
   __device__ inline auto operator()(InputT input) -> decltype(std::cbrt(input))
   {
     return std::cbrt(input);
@@ -718,7 +736,7 @@ template <>
 struct operator_functor<ast_operator::CEIL, false> {
   static constexpr auto arity{1};
 
-  template <typename InputT>
+  template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
   __device__ inline auto operator()(InputT input) -> decltype(std::ceil(input))
   {
     return std::ceil(input);
@@ -729,7 +747,7 @@ template <>
 struct operator_functor<ast_operator::FLOOR, false> {
   static constexpr auto arity{1};
 
-  template <typename InputT>
+  template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
   __device__ inline auto operator()(InputT input) -> decltype(std::floor(input))
   {
     return std::floor(input);
@@ -758,7 +776,7 @@ template <>
 struct operator_functor<ast_operator::RINT, false> {
   static constexpr auto arity{1};
 
-  template <typename InputT>
+  template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
   __device__ inline auto operator()(InputT input) -> decltype(std::rint(input))
   {
     return std::rint(input);
@@ -769,7 +787,8 @@ template <>
 struct operator_functor<ast_operator::BIT_INVERT, false> {
   static constexpr auto arity{1};
 
-  template <typename InputT>
+//  template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
+  template <typename InputT, std::enable_if_t<is_operator_type_v<InputT>>* = nullptr>
   __device__ inline auto operator()(InputT input) -> decltype(~input)
   {
     return ~input;
@@ -780,7 +799,7 @@ template <>
 struct operator_functor<ast_operator::NOT, false> {
   static constexpr auto arity{1};
 
-  template <typename InputT>
+  template <typename InputT, std::enable_if_t<is_operator_type_v<InputT>>* = nullptr>
   __device__ inline auto operator()(InputT input) -> decltype(!input)
   {
     return !input;
