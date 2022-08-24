@@ -68,8 +68,8 @@ class make_pair_function {
   __device__ __forceinline__ cudf::detail::pair_type operator()(size_type i) const noexcept
   {
     // Compute the hash value of row `i`
-    auto row_hash_value = remap_sentinel_hash(_hash(i), _empty_key_sentinel);
-    return cuco::make_pair(row_hash_value, i);
+    // auto row_hash_value = remap_sentinel_hash(_hash(i), _empty_key_sentinel);
+    return cuco::make_pair(i, i); //cuco::make_pair(row_hash_value, i);
   }
 
  private:

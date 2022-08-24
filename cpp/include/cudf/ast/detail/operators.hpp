@@ -67,18 +67,18 @@ CUDF_HOST_DEVICE inline constexpr void ast_operator_dispatcher(ast_operator op, 
     case ast_operator::TRUE_DIV:
       f.template operator()<ast_operator::TRUE_DIV>(std::forward<Ts>(args)...);
       break;
-    case ast_operator::FLOOR_DIV:
-      f.template operator()<ast_operator::FLOOR_DIV>(std::forward<Ts>(args)...);
-      break;
+//    case ast_operator::FLOOR_DIV:
+//      f.template operator()<ast_operator::FLOOR_DIV>(std::forward<Ts>(args)...);
+//      break;
 //    case ast_operator::MOD:
 //      f.template operator()<ast_operator::MOD>(std::forward<Ts>(args)...);
 //      break;
 //    case ast_operator::PYMOD:
 //      f.template operator()<ast_operator::PYMOD>(std::forward<Ts>(args)...);
 //      break;
-    case ast_operator::POW:
-      f.template operator()<ast_operator::POW>(std::forward<Ts>(args)...);
-      break;
+//    case ast_operator::POW:
+//      f.template operator()<ast_operator::POW>(std::forward<Ts>(args)...);
+//      break;
     case ast_operator::EQUAL:
       f.template operator()<ast_operator::EQUAL>(std::forward<Ts>(args)...);
       break;
@@ -100,15 +100,15 @@ CUDF_HOST_DEVICE inline constexpr void ast_operator_dispatcher(ast_operator op, 
     case ast_operator::GREATER_EQUAL:
       f.template operator()<ast_operator::GREATER_EQUAL>(std::forward<Ts>(args)...);
       break;
-    case ast_operator::BITWISE_AND:
-      f.template operator()<ast_operator::BITWISE_AND>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::BITWISE_OR:
-      f.template operator()<ast_operator::BITWISE_OR>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::BITWISE_XOR:
-      f.template operator()<ast_operator::BITWISE_XOR>(std::forward<Ts>(args)...);
-      break;
+//    case ast_operator::BITWISE_AND:
+//      f.template operator()<ast_operator::BITWISE_AND>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::BITWISE_OR:
+//      f.template operator()<ast_operator::BITWISE_OR>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::BITWISE_XOR:
+//      f.template operator()<ast_operator::BITWISE_XOR>(std::forward<Ts>(args)...);
+//      break;
     case ast_operator::LOGICAL_AND:
       f.template operator()<ast_operator::LOGICAL_AND>(std::forward<Ts>(args)...);
       break;
@@ -124,80 +124,80 @@ CUDF_HOST_DEVICE inline constexpr void ast_operator_dispatcher(ast_operator op, 
     case ast_operator::IDENTITY:
       f.template operator()<ast_operator::IDENTITY>(std::forward<Ts>(args)...);
       break;
-    case ast_operator::SIN:
-      f.template operator()<ast_operator::SIN>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::COS:
-      f.template operator()<ast_operator::COS>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::TAN:
-      f.template operator()<ast_operator::TAN>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::ARCSIN:
-      f.template operator()<ast_operator::ARCSIN>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::ARCCOS:
-      f.template operator()<ast_operator::ARCCOS>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::ARCTAN:
-      f.template operator()<ast_operator::ARCTAN>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::SINH:
-      f.template operator()<ast_operator::SINH>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::COSH:
-      f.template operator()<ast_operator::COSH>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::TANH:
-      f.template operator()<ast_operator::TANH>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::ARCSINH:
-      f.template operator()<ast_operator::ARCSINH>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::ARCCOSH:
-      f.template operator()<ast_operator::ARCCOSH>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::ARCTANH:
-      f.template operator()<ast_operator::ARCTANH>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::EXP:
-      f.template operator()<ast_operator::EXP>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::LOG:
-      f.template operator()<ast_operator::LOG>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::SQRT:
-      f.template operator()<ast_operator::SQRT>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::CBRT:
-      f.template operator()<ast_operator::CBRT>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::CEIL:
-      f.template operator()<ast_operator::CEIL>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::FLOOR:
-      f.template operator()<ast_operator::FLOOR>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::ABS:
-      f.template operator()<ast_operator::ABS>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::RINT:
-      f.template operator()<ast_operator::RINT>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::BIT_INVERT:
-      f.template operator()<ast_operator::BIT_INVERT>(std::forward<Ts>(args)...);
-      break;
+//    case ast_operator::SIN:
+//      f.template operator()<ast_operator::SIN>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::COS:
+//      f.template operator()<ast_operator::COS>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::TAN:
+//      f.template operator()<ast_operator::TAN>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::ARCSIN:
+//      f.template operator()<ast_operator::ARCSIN>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::ARCCOS:
+//      f.template operator()<ast_operator::ARCCOS>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::ARCTAN:
+//      f.template operator()<ast_operator::ARCTAN>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::SINH:
+//      f.template operator()<ast_operator::SINH>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::COSH:
+//      f.template operator()<ast_operator::COSH>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::TANH:
+//      f.template operator()<ast_operator::TANH>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::ARCSINH:
+//      f.template operator()<ast_operator::ARCSINH>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::ARCCOSH:
+//      f.template operator()<ast_operator::ARCCOSH>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::ARCTANH:
+//      f.template operator()<ast_operator::ARCTANH>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::EXP:
+//      f.template operator()<ast_operator::EXP>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::LOG:
+//      f.template operator()<ast_operator::LOG>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::SQRT:
+//      f.template operator()<ast_operator::SQRT>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::CBRT:
+//      f.template operator()<ast_operator::CBRT>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::CEIL:
+//      f.template operator()<ast_operator::CEIL>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::FLOOR:
+//      f.template operator()<ast_operator::FLOOR>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::ABS:
+//      f.template operator()<ast_operator::ABS>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::RINT:
+//      f.template operator()<ast_operator::RINT>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::BIT_INVERT:
+//      f.template operator()<ast_operator::BIT_INVERT>(std::forward<Ts>(args)...);
+//      break;
     case ast_operator::NOT:
       f.template operator()<ast_operator::NOT>(std::forward<Ts>(args)...);
       break;
-    case ast_operator::CAST_TO_INT64:
-      f.template operator()<ast_operator::CAST_TO_INT64>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::CAST_TO_UINT64:
-      f.template operator()<ast_operator::CAST_TO_UINT64>(std::forward<Ts>(args)...);
-      break;
-    case ast_operator::CAST_TO_FLOAT64:
-      f.template operator()<ast_operator::CAST_TO_FLOAT64>(std::forward<Ts>(args)...);
+//    case ast_operator::CAST_TO_INT64:
+//      f.template operator()<ast_operator::CAST_TO_INT64>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::CAST_TO_UINT64:
+//      f.template operator()<ast_operator::CAST_TO_UINT64>(std::forward<Ts>(args)...);
+//      break;
+//    case ast_operator::CAST_TO_FLOAT64:
+//      f.template operator()<ast_operator::CAST_TO_FLOAT64>(std::forward<Ts>(args)...);
       break;
     default: {
 #ifndef __CUDA_ARCH__
@@ -208,6 +208,28 @@ CUDF_HOST_DEVICE inline constexpr void ast_operator_dispatcher(ast_operator op, 
     }
   }
 }
+
+    template<typename T>
+    using is_operator_type = cuda::std::disjunction<std::is_arithmetic<T>,
+            cudf::is_timestamp_t<T>,
+            cudf::is_duration_t<T>,
+            std::is_same<T, dictionary32>,
+            std::is_same<T, cudf::list_view>,
+            std::is_same<T, numeric::decimal32>,
+//                std::is_same<T, numeric::decimal64>,
+//                std::is_same<T, numeric::decimal128>,
+            std::is_same<T, cudf::struct_view>>;
+
+    template<typename T>
+    constexpr bool is_operator_type_v = cuda::std::disjunction<std::is_arithmetic<T>,
+            cudf::is_timestamp_t<T>,
+            cudf::is_duration_t<T>,
+            std::is_same<T, dictionary32>,
+            std::is_same<T, cudf::list_view>,
+            std::is_same<T, numeric::decimal32>,
+//                std::is_same<T, numeric::decimal64>,
+//                std::is_same<T, numeric::decimal128>,
+            std::is_same<T, cudf::struct_view>>::value;
 
 /**
  * @brief Operator functor.
@@ -223,70 +245,59 @@ CUDF_HOST_DEVICE inline constexpr void ast_operator_dispatcher(ast_operator op, 
  *
  * @tparam op AST operator.
  */
-template <ast_operator op, bool has_nulls>
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp, ast_operator op, bool has_nulls>
 struct operator_functor {
 };
 
-        template<typename T>
-        constexpr bool is_operator_type_v = cuda::std::disjunction<std::is_arithmetic<T>,
-                cudf::is_timestamp_t<T>,
-                cudf::is_duration_t<T>,
-        std::is_same<T, dictionary32>,
-        std::is_same<T, cudf::list_view>,
-//                std::is_same<T, numeric::decimal32>,
-//                std::is_same<T, numeric::decimal64>,
-//                std::is_same<T, numeric::decimal128>,
-                std::is_same<T, cudf::struct_view>>::value;
-
-template <>
-struct operator_functor<ast_operator::ADD, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::ADD, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
+  template <typename LHS, typename RHS, std::enable_if_t<IsOpType<LHS>::value and IsOp<ast_operator::ADD>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs + rhs)
   {
     return lhs + rhs;
   }
 };
 
-template <>
-struct operator_functor<ast_operator::SUB, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::SUB, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
+  template <typename LHS, typename RHS, std::enable_if_t<IsOpType<LHS>::value and IsOp<ast_operator::SUB>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs - rhs)
   {
     return lhs - rhs;
   }
 };
 
-template <>
-struct operator_functor<ast_operator::MUL, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::MUL, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
+  template <typename LHS, typename RHS, std::enable_if_t<IsOpType<LHS>::value and IsOp<ast_operator::MUL>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs * rhs)
   {
     return lhs * rhs;
   }
 };
 
-template <>
-struct operator_functor<ast_operator::DIV, false> {
+    template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::DIV, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
+  template <typename LHS, typename RHS, std::enable_if_t<IsOpType<LHS>::value and IsOp<ast_operator::DIV>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs / rhs)
   {
     return lhs / rhs;
   }
 };
 
-template <>
-struct operator_functor<ast_operator::TRUE_DIV, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::TRUE_DIV, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
+  template <typename LHS, typename RHS, std::enable_if_t<IsOpType<LHS>::value and IsOp<ast_operator::TRUE_DIV>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(static_cast<double>(lhs) / static_cast<double>(rhs))
   {
@@ -294,11 +305,11 @@ struct operator_functor<ast_operator::TRUE_DIV, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::FLOOR_DIV, false> {
+  template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::FLOOR_DIV, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
+  template <typename LHS, typename RHS, std::enable_if_t<IsOpType<LHS>::value and IsOp<ast_operator::FLOOR_DIV>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(floor(static_cast<double>(lhs) / static_cast<double>(rhs)))
   {
@@ -306,14 +317,14 @@ struct operator_functor<ast_operator::FLOOR_DIV, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::MOD, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::MOD, false> {
   static constexpr auto arity{2};
 
   template <typename LHS,
             typename RHS,
             typename CommonType                               = std::common_type_t<LHS, RHS>,
-            std::enable_if_t<std::is_integral_v<CommonType>>* = nullptr>
+            std::enable_if_t<std::is_integral_v<CommonType> and IsOp<ast_operator::MOD>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(static_cast<CommonType>(lhs) % static_cast<CommonType>(rhs))
   {
@@ -323,7 +334,7 @@ struct operator_functor<ast_operator::MOD, false> {
   template <typename LHS,
             typename RHS,
             typename CommonType                                  = std::common_type_t<LHS, RHS>,
-            std::enable_if_t<std::is_same_v<CommonType, float>>* = nullptr>
+            std::enable_if_t<std::is_same_v<CommonType, float> and IsOp<ast_operator::MOD>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(fmodf(static_cast<CommonType>(lhs), static_cast<CommonType>(rhs)))
   {
@@ -333,7 +344,7 @@ struct operator_functor<ast_operator::MOD, false> {
   template <typename LHS,
             typename RHS,
             typename CommonType                                   = std::common_type_t<LHS, RHS>,
-            std::enable_if_t<std::is_same_v<CommonType, double>>* = nullptr>
+            std::enable_if_t<std::is_same_v<CommonType, double> and IsOp<ast_operator::MOD>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(fmod(static_cast<CommonType>(lhs), static_cast<CommonType>(rhs)))
   {
@@ -341,14 +352,14 @@ struct operator_functor<ast_operator::MOD, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::PYMOD, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::PYMOD, false> {
   static constexpr auto arity{2};
 
   template <typename LHS,
             typename RHS,
             typename CommonType                               = std::common_type_t<LHS, RHS>,
-            std::enable_if_t<std::is_integral_v<CommonType>>* = nullptr>
+            std::enable_if_t<std::is_integral_v<CommonType> and IsOp<ast_operator::PYMOD>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(((static_cast<CommonType>(lhs) % static_cast<CommonType>(rhs)) +
                  static_cast<CommonType>(rhs)) %
@@ -362,7 +373,7 @@ struct operator_functor<ast_operator::PYMOD, false> {
   template <typename LHS,
             typename RHS,
             typename CommonType                                  = std::common_type_t<LHS, RHS>,
-            std::enable_if_t<std::is_same_v<CommonType, float>>* = nullptr>
+            std::enable_if_t<std::is_same_v<CommonType, float> and IsOp<ast_operator::PYMOD>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(fmodf(fmodf(static_cast<CommonType>(lhs), static_cast<CommonType>(rhs)) +
                         static_cast<CommonType>(rhs),
@@ -376,7 +387,7 @@ struct operator_functor<ast_operator::PYMOD, false> {
   template <typename LHS,
             typename RHS,
             typename CommonType                                   = std::common_type_t<LHS, RHS>,
-            std::enable_if_t<std::is_same_v<CommonType, double>>* = nullptr>
+            std::enable_if_t<std::is_same_v<CommonType, double> and IsOp<ast_operator::PYMOD>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs)
     -> decltype(fmod(fmod(static_cast<CommonType>(lhs), static_cast<CommonType>(rhs)) +
                        static_cast<CommonType>(rhs),
@@ -388,11 +399,11 @@ struct operator_functor<ast_operator::PYMOD, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::POW, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::POW, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS, std::enable_if_t<std::is_arithmetic_v<LHS>>* = nullptr>
+  template <typename LHS, typename RHS, std::enable_if_t<std::is_arithmetic_v<LHS> and IsOp<ast_operator::POW>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(std::pow(lhs, rhs))
   {
     return std::pow(lhs, rhs);
@@ -400,11 +411,11 @@ struct operator_functor<ast_operator::POW, false> {
 };
 
 
-template <>
-struct operator_functor<ast_operator::EQUAL, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::EQUAL, false> {
   static constexpr auto arity{2};
 
-  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
+  template <typename LHS, typename RHS, std::enable_if_t<IsOpType<LHS>::value and IsOp<ast_operator::EQUAL>::value>* = nullptr>
   __device__ inline auto operator()(LHS lhs, RHS rhs) -> decltype(lhs == rhs)
   {
     return lhs == rhs;
@@ -412,13 +423,13 @@ struct operator_functor<ast_operator::EQUAL, false> {
 };
 
 // Alias NULL_EQUAL = EQUAL in the non-nullable case.
-template <>
-struct operator_functor<ast_operator::NULL_EQUAL, false>
-  : public operator_functor<ast_operator::EQUAL, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::NULL_EQUAL, false>
+  : public operator_functor<IsOpType, IsOp, ast_operator::EQUAL, false> {
 };
 
-template <>
-struct operator_functor<ast_operator::NOT_EQUAL, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::NOT_EQUAL, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
@@ -428,8 +439,8 @@ struct operator_functor<ast_operator::NOT_EQUAL, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::LESS, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::LESS, false> {
   static constexpr auto arity{2};
 
     template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
@@ -439,8 +450,8 @@ struct operator_functor<ast_operator::LESS, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::GREATER, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::GREATER, false> {
   static constexpr auto arity{2};
 
     template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
@@ -450,8 +461,8 @@ struct operator_functor<ast_operator::GREATER, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::LESS_EQUAL, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::LESS_EQUAL, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
@@ -461,8 +472,8 @@ struct operator_functor<ast_operator::LESS_EQUAL, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::GREATER_EQUAL, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::GREATER_EQUAL, false> {
   static constexpr auto arity{2};
 
   template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
@@ -472,8 +483,8 @@ struct operator_functor<ast_operator::GREATER_EQUAL, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::BITWISE_AND, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::BITWISE_AND, false> {
   static constexpr auto arity{2};
 
 //  template <typename LHS, typename RHS, std::enable_if_t<std::is_arithmetic_v<LHS>>* = nullptr>
@@ -484,8 +495,8 @@ struct operator_functor<ast_operator::BITWISE_AND, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::BITWISE_OR, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::BITWISE_OR, false> {
   static constexpr auto arity{2};
 
 //  template <typename LHS, typename RHS, std::enable_if_t<std::is_arithmetic_v<LHS>>* = nullptr>
@@ -496,8 +507,8 @@ struct operator_functor<ast_operator::BITWISE_OR, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::BITWISE_XOR, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::BITWISE_XOR, false> {
   static constexpr auto arity{2};
 
 //  template <typename LHS, typename RHS, std::enable_if_t<std::is_arithmetic_v<LHS>>* = nullptr>
@@ -508,8 +519,8 @@ struct operator_functor<ast_operator::BITWISE_XOR, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::LOGICAL_AND, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::LOGICAL_AND, false> {
   static constexpr auto arity{2};
 
 //  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
@@ -521,13 +532,13 @@ struct operator_functor<ast_operator::LOGICAL_AND, false> {
 };
 
 // Alias NULL_LOGICAL_AND = LOGICAL_AND in the non-nullable case.
-template <>
-struct operator_functor<ast_operator::NULL_LOGICAL_AND, false>
-  : public operator_functor<ast_operator::LOGICAL_AND, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::NULL_LOGICAL_AND, false>
+  : public operator_functor<IsOpType, IsOp, ast_operator::LOGICAL_AND, false> {
 };
 
-template <>
-struct operator_functor<ast_operator::LOGICAL_OR, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::LOGICAL_OR, false> {
   static constexpr auto arity{2};
 
 //  template <typename LHS, typename RHS, std::enable_if_t<is_operator_type_v<LHS>>* = nullptr>
@@ -539,13 +550,13 @@ struct operator_functor<ast_operator::LOGICAL_OR, false> {
 };
 
 // Alias NULL_LOGICAL_OR = LOGICAL_OR in the non-nullable case.
-template <>
-struct operator_functor<ast_operator::NULL_LOGICAL_OR, false>
-  : public operator_functor<ast_operator::LOGICAL_OR, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::NULL_LOGICAL_OR, false>
+  : public operator_functor<IsOpType, IsOp, ast_operator::LOGICAL_OR, false> {
 };
 
-template <>
-struct operator_functor<ast_operator::IDENTITY, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::IDENTITY, false> {
   static constexpr auto arity{1};
 
 //  template <typename InputT, std::enable_if_t<is_operator_type_v<InputT>>* = nullptr>
@@ -556,8 +567,8 @@ struct operator_functor<ast_operator::IDENTITY, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::SIN, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::SIN, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -567,8 +578,8 @@ struct operator_functor<ast_operator::SIN, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::COS, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::COS, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -578,8 +589,8 @@ struct operator_functor<ast_operator::COS, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::TAN, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::TAN, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -589,8 +600,8 @@ struct operator_functor<ast_operator::TAN, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::ARCSIN, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::ARCSIN, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -600,8 +611,8 @@ struct operator_functor<ast_operator::ARCSIN, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::ARCCOS, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::ARCCOS, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -611,8 +622,8 @@ struct operator_functor<ast_operator::ARCCOS, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::ARCTAN, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::ARCTAN, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -622,8 +633,8 @@ struct operator_functor<ast_operator::ARCTAN, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::SINH, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::SINH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -633,8 +644,8 @@ struct operator_functor<ast_operator::SINH, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::COSH, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::COSH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -644,8 +655,8 @@ struct operator_functor<ast_operator::COSH, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::TANH, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::TANH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -655,8 +666,8 @@ struct operator_functor<ast_operator::TANH, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::ARCSINH, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::ARCSINH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -666,8 +677,8 @@ struct operator_functor<ast_operator::ARCSINH, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::ARCCOSH, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::ARCCOSH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -677,8 +688,8 @@ struct operator_functor<ast_operator::ARCCOSH, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::ARCTANH, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::ARCTANH, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_floating_point_v<InputT>>* = nullptr>
@@ -688,8 +699,8 @@ struct operator_functor<ast_operator::ARCTANH, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::EXP, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::EXP, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
@@ -699,8 +710,8 @@ struct operator_functor<ast_operator::EXP, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::LOG, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::LOG, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
@@ -710,8 +721,8 @@ struct operator_functor<ast_operator::LOG, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::SQRT, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::SQRT, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
@@ -721,8 +732,8 @@ struct operator_functor<ast_operator::SQRT, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::CBRT, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::CBRT, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
@@ -732,8 +743,8 @@ struct operator_functor<ast_operator::CBRT, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::CEIL, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::CEIL, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
@@ -743,8 +754,8 @@ struct operator_functor<ast_operator::CEIL, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::FLOOR, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::FLOOR, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
@@ -754,8 +765,8 @@ struct operator_functor<ast_operator::FLOOR, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::ABS, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::ABS, false> {
   static constexpr auto arity{1};
 
   // Only accept signed or unsigned types (both require is_arithmetic<T> to be true)
@@ -772,8 +783,8 @@ struct operator_functor<ast_operator::ABS, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::RINT, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::RINT, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
@@ -783,8 +794,8 @@ struct operator_functor<ast_operator::RINT, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::BIT_INVERT, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::BIT_INVERT, false> {
   static constexpr auto arity{1};
 
 //  template <typename InputT, std::enable_if_t<std::is_arithmetic_v<InputT>>* = nullptr>
@@ -795,8 +806,8 @@ struct operator_functor<ast_operator::BIT_INVERT, false> {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::NOT, false> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::NOT, false> {
   static constexpr auto arity{1};
 
   template <typename InputT, std::enable_if_t<is_operator_type_v<InputT>>* = nullptr>
@@ -816,23 +827,23 @@ struct cast {
   }
 };
 
-template <>
-struct operator_functor<ast_operator::CAST_TO_INT64, false> : cast<int64_t> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::CAST_TO_INT64, false> : cast<int64_t> {
 };
-template <>
-struct operator_functor<ast_operator::CAST_TO_UINT64, false> : cast<uint64_t> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::CAST_TO_UINT64, false> : cast<uint64_t> {
 };
-template <>
-struct operator_functor<ast_operator::CAST_TO_FLOAT64, false> : cast<double> {
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::CAST_TO_FLOAT64, false> : cast<double> {
 };
 
 /*
  * The default specialization of nullable operators is to fall back to the non-nullable
  * implementation
  */
-template <ast_operator op>
-struct operator_functor<op, true> {
-  using NonNullOperator       = operator_functor<op, false>;
+template <template<typename> typename IsOpType, template<ast_operator> typename IsOp, ast_operator op>
+struct operator_functor<IsOpType, IsOp, op, true> {
+  using NonNullOperator       = operator_functor<IsOpType, IsOp, op, false>;
   static constexpr auto arity = NonNullOperator::arity;
 
   template <typename LHS,
@@ -859,9 +870,9 @@ struct operator_functor<op, true> {
 
 // NULL_EQUAL(null, null) is true, NULL_EQUAL(null, valid) is false, and NULL_EQUAL(valid, valid) ==
 // EQUAL(valid, valid)
-template <>
-struct operator_functor<ast_operator::NULL_EQUAL, true> {
-  using NonNullOperator       = operator_functor<ast_operator::NULL_EQUAL, false>;
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::NULL_EQUAL, true> {
+  using NonNullOperator       = operator_functor<IsOpType, IsOp, ast_operator::NULL_EQUAL, false>;
   static constexpr auto arity = NonNullOperator::arity;
 
   template <typename LHS, typename RHS>
@@ -880,9 +891,9 @@ struct operator_functor<ast_operator::NULL_EQUAL, true> {
 ///< NULL_LOGICAL_AND(null, null) is null, NULL_LOGICAL_AND(null, true) is null,
 ///< NULL_LOGICAL_AND(null, false) is false, and NULL_LOGICAL_AND(valid, valid) ==
 ///< LOGICAL_AND(valid, valid)
-template <>
-struct operator_functor<ast_operator::NULL_LOGICAL_AND, true> {
-  using NonNullOperator       = operator_functor<ast_operator::NULL_LOGICAL_AND, false>;
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::NULL_LOGICAL_AND, true> {
+  using NonNullOperator       = operator_functor<IsOpType, IsOp, ast_operator::NULL_LOGICAL_AND, false>;
   static constexpr auto arity = NonNullOperator::arity;
 
   template <typename LHS, typename RHS>
@@ -903,9 +914,9 @@ struct operator_functor<ast_operator::NULL_LOGICAL_AND, true> {
 
 ///< NULL_LOGICAL_OR(null, null) is null, NULL_LOGICAL_OR(null, true) is true, NULL_LOGICAL_OR(null,
 ///< false) is null, and NULL_LOGICAL_OR(valid, valid) == LOGICAL_OR(valid, valid)
-template <>
-struct operator_functor<ast_operator::NULL_LOGICAL_OR, true> {
-  using NonNullOperator       = operator_functor<ast_operator::NULL_LOGICAL_OR, false>;
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
+struct operator_functor<IsOpType, IsOp, ast_operator::NULL_LOGICAL_OR, true> {
+  using NonNullOperator       = operator_functor<IsOpType, IsOp, ast_operator::NULL_LOGICAL_OR, false>;
   static constexpr auto arity = NonNullOperator::arity;
 
   template <typename LHS, typename RHS>
@@ -964,6 +975,7 @@ struct single_dispatch_binary_operator_types {
  * This functor performs single dispatch, which assumes lhs_type == rhs_type. This may not be true
  * for all binary operators but holds for all currently implemented operators.
  */
+template<typename IsOpType, typename IsOp>
 struct type_dispatch_binary_op {
   /**
    * @brief Performs type dispatch for a binary operator.
@@ -986,7 +998,7 @@ struct type_dispatch_binary_op {
     type_dispatcher(
       lhs_type,
       // Always dispatch to the non-null operator for the purpose of type determination.
-      detail::single_dispatch_binary_operator_types<operator_functor<op, false>>{},
+      detail::single_dispatch_binary_operator_types<operator_functor<IsOpType, IsOp, op, false>{},
       std::forward<F>(f),
       std::forward<Ts>(args)...);
   }
@@ -1007,7 +1019,7 @@ CUDF_HOST_DEVICE inline constexpr void binary_operator_dispatcher(
   ast_operator op, cudf::data_type lhs_type, cudf::data_type rhs_type, F&& f, Ts&&... args)
 {
   ast_operator_dispatcher(op,
-                          detail::type_dispatch_binary_op{},
+                          detail::type_dispatch_binary_op<IsOpType, IsOp>{},
                           lhs_type,
                           rhs_type,
                           std::forward<F>(f),
@@ -1050,6 +1062,7 @@ struct dispatch_unary_operator_types {
 /**
  * @brief Functor performing a type dispatch for a unary operator.
  */
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp>
 struct type_dispatch_unary_op {
   template <ast_operator op, typename F, typename... Ts>
   CUDF_HOST_DEVICE inline void operator()(cudf::data_type input_type, F&& f, Ts&&... args)
@@ -1057,7 +1070,7 @@ struct type_dispatch_unary_op {
     type_dispatcher(
       input_type,
       // Always dispatch to the non-null operator for the purpose of type determination.
-      detail::dispatch_unary_operator_types<operator_functor<op, false>>{},
+      detail::dispatch_unary_operator_types<operator_functor<IsOpType, IsOp, op, false>>{},
       std::forward<F>(f),
       std::forward<Ts>(args)...);
   }
@@ -1072,14 +1085,14 @@ struct type_dispatch_unary_op {
  * @param f Forwarded functor to be called.
  * @param args Forwarded arguments to `operator()` of `f`.
  */
-template <typename F, typename... Ts>
+template<template<typename> typename IsOpType, template<ast_operator> typename IsOp, typename F, typename... Ts>
 CUDF_HOST_DEVICE inline constexpr void unary_operator_dispatcher(ast_operator op,
                                                                  cudf::data_type input_type,
                                                                  F&& f,
                                                                  Ts&&... args)
 {
   ast_operator_dispatcher(op,
-                          detail::type_dispatch_unary_op{},
+                          detail::type_dispatch_unary_op<IsOpType, IsOp>{},
                           input_type,
                           std::forward<F>(f),
                           std::forward<Ts>(args)...);
@@ -1181,7 +1194,7 @@ struct arity_functor {
   CUDF_HOST_DEVICE inline void operator()(cudf::size_type& result)
   {
     // Arity is not dependent on null handling, so just use the false implementation here.
-    result = operator_functor<op, false>::arity;
+    result = operator_functor<IsOpType, IsOp, op, false>::arity;
   }
 };
 
